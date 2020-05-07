@@ -5,15 +5,15 @@
 #include <set>
 #include <map>
 #include <queue>
-#include "GraphQL.h"
+#include "GraphDS.h"
 using namespace std;
 
-namespace Dinic {
-  int s, t;
+namespace MF {
+  int s, t, n;
   struct edge {int v, ne, c, f;} e[MAX_NODE * MAX_NODE];
   int cnt=1, h[MAX_NODE];
   void ins(int u, int v, int c) { 
-    //printf("ins %d %d %d\n", u, v, c);
+    // printf("ins %d %d %d\n", u, v, c);
     e[++cnt] = (edge) {v, h[u], c, 0}; h[u] = cnt;
     e[++cnt] = (edge) {u, h[v], 0, 0}; h[v] = cnt;
   }
@@ -29,7 +29,7 @@ namespace Dinic {
         if(!vis[v] && e[i].c > e[i].f) {
           vis[v] = 1;
           d[v] = d[u] + 1;
-          q[tail++] = v;
+          q[tail++] = v; 
           if(v == t) return true;
         }
       }
@@ -53,17 +53,18 @@ namespace Dinic {
     return flow;
   }
 
-  void init() {
-    cnt = 1;
-    memset(h, 0, sizeof(h));
-  }
-
   int dinic() { 
     int flow = 0;
-    while(bfs()) {
+    while(bfs()) { 
       for(int i=s; i<=t; i++) cur[i] = h[i];
       flow += dfs(s, 1e9);
-    }
+    } 
     return flow;
+  }
+
+  void init(int node_cnt) {
+    n = node_cnt+1;
+    cnt = 1;
+    memset(h, 0, sizeof(h));
   }
 }

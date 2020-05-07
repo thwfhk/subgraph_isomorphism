@@ -7,11 +7,9 @@
 #include <queue>
 
 #include "Dinic.cpp"
-#ifndef GraphQL
-#include "GraphQL.h"
-#endif
+#include "GraphDS.h"
 
-using namespace std;
+using std::vector;
 
 void print_vector(vector<int> v, char end = '\n') {
   for (int x : v) printf("%d ", x); printf("%c", end);
@@ -46,9 +44,10 @@ void getNeighbor(Graph &G, int d, int u, int r, vector<int> &neighbor, bool useL
 
 // O(n^2) dp
 bool isSubSequence(vector<int> a, vector<int> b) {
-  static bool f[MAX_NODE][MAX_NODE];
-  memset(f, 0, sizeof(f));
   int n = a.size(), m = b.size();
+  bool **f = new bool* [n] ();
+  for (int i=0; i<n; i++) f[i] = new bool [m] ();
+
   for (int j=0; j<m; j++) f[0][j] = true;
   for (int i=1; i<n; i++) {
     for (int j=i; j<m; j++) {
@@ -56,8 +55,11 @@ bool isSubSequence(vector<int> a, vector<int> b) {
       else f[i][j] = f[i][j-1];
     }
   }
-  for (int j=n-1; j<m; j++) if (f[n-1][j]) return true;
-  return false;
+  bool ans = false;
+  for (int j=n-1; j<m; j++) if (f[n-1][j]) {ans = true; break;}
+  for (int i=0; i<n; i++) delete [] f[i];
+  delete [] f;
+  return ans;
 }
 
 void optimize1Phi(Graph &P, Graph &G, vector<int> *Phi, int r) {
@@ -79,9 +81,11 @@ void optimize1Phi(Graph &P, Graph &G, vector<int> *Phi, int r) {
 }
 
 void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
-  static bool inqt[MAX_NODE][MAX_NODE];
+  static bool inqt[MAXPN][MAXPN];
+  memset(inqt, 0, sizeof(inqt));
+
   queue<pair<int, int> > q;
-  for (int u = 1; u <= P.n; u++) 
+  for (int u = 1; u <= P.n; u++)
     for (int v : Phi[u]) {
       q.push({u, v});
     }
@@ -89,31 +93,32 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
   for (int i = 1; i <= l; i++) {
     // qt is used to store the (u,v) pairs needed to be updated in the next level
     queue<pair<int, int> > qt;
-    memset(inqt, 0, sizeof(inqt)); 
+    memset(inqt, 0, sizeof(inqt));
     while (!q.empty()) {
       pair<int, int> x = q.front(); q.pop();
       int u = x.first, v = x.second;
       vector<int> neighbor_u; getNeighbor(P, 0, u, 1, neighbor_u, false);
       vector<int> neighbor_v; getNeighbor(G, 0, v, 1, neighbor_v, false);
-      //printf("-----------------now(%d,%d)-----------------\n", u, v);
+      // printf("-----------------now(%d,%d)-----------------\n", u, v);
       //print_vector(neighbor_u);
       //print_vector(neighbor_v);
 
       // build bi-graph
-      Dinic::init();
+      MF::init(P.n+G.n+1);
       for (int u : neighbor_u) 
         for (int v : neighbor_v) {
           if (find(Phi[u].begin(), Phi[u].end(), v) != Phi[u].end()) {
-            Dinic::ins(u, P.n + v, 1);
+            MF::ins(u, P.n + v, 1);
           }
         }
-      Dinic::s = 0; Dinic::t = P.n + G.n + 1;
-      for (int u : neighbor_u) Dinic::ins(Dinic::s, u, 1);
-      for (int v : neighbor_v) Dinic::ins(P.n + v, Dinic::t, 1);
+      MF::s = 0; MF::t = P.n + G.n + 1;
+      for (int u : neighbor_u) MF::ins(MF::s, u, 1);
+      for (int v : neighbor_v) MF::ins(P.n + v, MF::t, 1);
 
       // if there's no perfect matching
-      int flow = Dinic::dinic(), maximum = neighbor_u.size();
-      //printf("flow %d %d\n", flow, maximum);
+      int flow = MF::dinic(), maximum = neighbor_u.size();
+      
+      // printf("flow %d %d\n", flow, maximum);
       if (flow < maximum) {
         //printf("not match (%d, %d)\n", u, v);
         Phi[u].erase(find(Phi[u].begin(), Phi[u].end(), v));
@@ -132,10 +137,10 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
   }
 }
 
-bool check(int u, int v, int *phi, Graph &P, Graph &G) {
+bool check(int u, int v, vector<int> *Phi, int *phi, Graph &P, Graph &G) {
   for (int i = P.h[u]; i; i = P.e[i].ne) {
     int ut = P.e[i].v;
-    if (ut >= u) continue;
+    if (Phi[ut].size() >= Phi[u].size()) continue; // NOTE: order |Phi|
     if (!G.g[v][phi[ut]]) return false;
   }
   return true;
@@ -143,13 +148,13 @@ bool check(int u, int v, int *phi, Graph &P, Graph &G) {
 
 // main search
 bool dfs(vector<pair<int, int> > &li, int cur, int n, vector<int> *Phi, bool *used, int *phi, Graph &P, Graph &G) {
-  int u = li[cur-1].second;
+  int u = li[cur-1].second; // u in P
   for (int v : Phi[u]) if (!used[v]) {
-    if (!check(u, v, phi, P, G)) continue;
+    if (!check(u, v, Phi, phi, P, G)) continue;
     phi[u] = v;
     used[v] = true;
-    if (u < n) {
-      if (dfs(li, u+1, n, Phi, used, phi, P, G)) return true;
+    if (cur < n) {
+      if (dfs(li, cur+1, n, Phi, used, phi, P, G)) return true;
     }
     else return true;
     used[v] = false;
@@ -158,48 +163,59 @@ bool dfs(vector<pair<int, int> > &li, int cur, int n, vector<int> *Phi, bool *us
 }
 
 bool solve(Graph &P, Graph &G) {
-  static bool used[MAX_NODE];
-  memset(used, 0, sizeof(used));
-  vector<int> Phi[MAX_NODE];
+  bool *used = new bool [G.n+1] ();
+  vector<int> *Phi = new vector<int> [P.n+1];
+  
+
   initialPhi(P, G, Phi);
-  puts("Initial: "); print_Phi(P, Phi);
+  // puts("Initial: "); print_Phi(P, Phi);
 
   optimize1Phi(P, G, Phi, 1);
-  puts("Optimization1: "); print_Phi(P, Phi);
+  // puts("Optimization1: "); print_Phi(P, Phi);
 
   optimize2Phi(P, G, Phi, 1);
-  puts("Optimization2: "); print_Phi(P, Phi);
+  // puts("Optimization2: "); print_Phi(P, Phi);
 
-  int phi[MAX_NODE];
+  int *phi = new int [P.n+1];
 
   // optimize3: find a good order
   vector<pair<int, int> > li;
   for (int i=1; i <= P.n; i++) li.push_back({Phi[i].size(), i});
   sort(li.begin(), li.end()); //|Phi| in a increase order
-  printf("order: "); 
-  for (auto i : li) printf("(%d, %d) ", i.first, i.second); puts("");
-  return dfs(li, 1, P.n, Phi, used, phi, P, G);
+  // printf("order: "); for (auto i : li) printf("(%d, %d) ", i.first, i.second); puts("");
+  
+  bool ans = dfs(li, 1, P.n, Phi, used, phi, P, G);
+
+  delete [] Phi;
+  delete [] used;
+  return ans;
 }
 
-int main() {
-  Graph P; Graph G;
-  cin >> P.n >> P.m;
-  for (int i=1; i <= P.n; i++) {
-    scanf("%d", &P.label[i]);
-  }
-  for (int i=1; i <= P.m; i++) {
-    int u, v;
-    scanf("%d %d", &u, &v);
-    P.ins(u, v);
-  }
-  cin >> G.n >> G.m;
-  for (int i=1; i <= G.n; i++) {
-    scanf("%d", &G.label[i]);
-  }
-  for (int i=1; i <= G.m; i++) {
-    int u, v;
-    scanf("%d %d", &u, &v);
-    G.ins(u, v);
-  }
-  cout << solve(P, G);
-}
+// int main() {
+//   int n, m;
+//   cin >> n >> m;
+//   Graph P(n, m);
+//   for (int i=1; i <= P.n; i++) {
+//     int x;
+//     scanf("%d", &x);
+//     P.label[i] = x+'0';
+//   }
+//   for (int i=1; i <= P.m; i++) {
+//     int u, v;
+//     scanf("%d %d", &u, &v);
+//     P.ins(u, v);
+//   }
+//   cin >> n >> m;
+//   Graph G(n, m);
+//   for (int i=1; i <= G.n; i++) {
+//     int x;
+//     scanf("%d", &x);
+//     G.label[i] = x+'0';
+//   }
+//   for (int i=1; i <= G.m; i++) {
+//     int u, v;
+//     scanf("%d %d", &u, &v);
+//     G.ins(u, v);
+//   }
+//   cout << solve(P, G);
+// }
