@@ -10,8 +10,9 @@
 #include <queue>
 #include <cstdlib>
 #include "GraphDS.h"
-#include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
-// #include "vf2/driver_Ullman.cpp" 
+// #include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
+// #include "vf2/driver_VF2.cpp" 
+#include "vf2/driver_Ullman.cpp" 
 using namespace std;
 
 const int AIDS_TOTAL = 42687;
@@ -64,6 +65,7 @@ void test(int set_number) {
       total_match += res;
       total_time += (clock() - begin) / CLOCKS_PER_SEC;
       // cout << "sub-iso " << P.id << " " << G.id << " " << solve(P, G) << "\n";
+      // P.print(); G.print();
     }
   printf("average time of queryset %d: %lf\n", set_number, total_time / (qn*gn));
   printf("total match %d / %d\n", total_match, qn*gn);
@@ -71,5 +73,6 @@ void test(int set_number) {
 
 int main() {
   vector<int> vec {4, 8, 12, 16, 20, 24};
+  // vector<int> vec {4};
   for (int v : vec) test(v);
 }

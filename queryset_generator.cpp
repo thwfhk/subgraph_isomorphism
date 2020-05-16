@@ -123,7 +123,7 @@ void sample(int data_num, int sample_num, string file_name) {
   srand(317);
   vector<int> vec;
   for (int i=1; i<=data_num; i++) vec.push_back(i);
-  // random_shuffle(vec.begin(), vec.end()); //NOTE: not shuffle here.
+  // random_shuffle(vec.begin(), vec.end()); //NOTE: currently not shuffle here.
   vector<int> vm {4, 8, 12, 16, 20, 24};
 
   for (int m : vm) { printf("m %d\n", m);
