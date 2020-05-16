@@ -1,8 +1,8 @@
+#ifndef Iso_wc
+#define Iso_wc
 #include <map>
 
 #include "Graph.h"
-
-using namespace UGraph;
 
 struct State {
     Digraph &G1, &G2;
@@ -22,7 +22,7 @@ struct State {
 };
 
 struct Ullmann {
-    Graph &A, &B;
+    UGraph &A, &B;
     int *res = NULL, *F;
     int **M;
     bool found;
@@ -32,7 +32,7 @@ struct Ullmann {
     bool subisomorphism();
     void print_res();
 
-    Ullmann(Graph &B, Graph &A) : B(B), A(A) {}
+    Ullmann(UGraph &B, UGraph &A) : B(B), A(A) {}
 };
 
 struct VF2 {
@@ -47,3 +47,5 @@ struct VF2 {
 
     VF2(Digraph &A, Digraph &B) : G1(A), G2(B), s(State(A, B)) {}
 };
+
+#endif

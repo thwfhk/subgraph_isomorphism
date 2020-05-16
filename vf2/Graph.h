@@ -1,19 +1,19 @@
+#ifndef Graph_wc
+#define Graph_wc
 #include <cstring>
 #include <set>
 #include <vector>
 
-namespace UGraph {
-struct Graph {
+struct UGraph {
     int n;
     int *deg, *label;
     int **adj;
     std::vector<std::vector<int>> neigh;
 
-    Graph(int);
+    UGraph(int);
     void insert(int, int);
-    ~Graph();
+    ~UGraph();
 };
-}  // namespace UGraph
 
 struct Digraph {
     int n;
@@ -25,3 +25,5 @@ struct Digraph {
     void insert(int, int);
     ~Digraph();
 };
+
+#endif

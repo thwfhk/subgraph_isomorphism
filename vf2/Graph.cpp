@@ -1,8 +1,8 @@
 #include "Graph.h"
 
-using namespace UGraph;
+// using namespace UGraph;
 
-Graph::Graph(int n) : n(n) {
+UGraph::UGraph(int n) : n(n) {
     for (int i = 0; i < n; i++) neigh.push_back(std::vector<int>());
     deg = new int[n];
     label = new int[n];
@@ -15,7 +15,7 @@ Graph::Graph(int n) : n(n) {
     memset(label, 0, n * sizeof(int));
 }
 
-void Graph::insert(int i, int j) {
+void UGraph::insert(int i, int j) {
     deg[i]++;
     deg[j]++;
     adj[i][j] = adj[j][i] = 1;
@@ -23,7 +23,7 @@ void Graph::insert(int i, int j) {
     neigh[j].push_back(i);
 }
 
-Graph::~Graph() {
+UGraph::~UGraph() {
     delete[] deg;
     delete[] label;
     for (int i = 0; i < n; i++) delete[] adj[i];

@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include "GraphDS.h"
 #include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
+// #include "vf2/driver_Ullman.cpp" 
 using namespace std;
 
 const int AIDS_TOTAL = 42687;
@@ -40,7 +41,7 @@ void load_data(string file_name, int data_num, Graph* gs[GRAPHN]) {
     }
     for(int j=1; j<=m; j++) {
       int u, v;
-     fin >> u >> v;
+      fin >> u >> v;
       gs[i]->ins(u, v);
     }
     getline(fin, s); // "\n"
