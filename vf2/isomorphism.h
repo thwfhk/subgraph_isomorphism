@@ -2,6 +2,8 @@
 
 #include "Graph.h"
 
+using namespace UGraph;
+
 struct State {
     Digraph &G1, &G2;
     std::map<int, int> M1, M2, P;

@@ -1,10 +1,12 @@
 #include "Graph.h"
 
+using namespace UGraph;
+
 Graph::Graph(int n) : n(n) {
     for (int i = 0; i < n; i++) neigh.push_back(std::vector<int>());
     deg = new int[n];
     label = new int[n];
-    adj = new int*[n];
+    adj = new int *[n];
     for (int i = 0; i < n; i++) {
         adj[i] = new int[n];
         memset(adj[i], 0, n * sizeof(int));
@@ -36,7 +38,7 @@ Digraph::Digraph(int n) : n(n) {
     indeg = new int[n];
     outdeg = new int[n];
     label = new int[n];
-    adj = new int*[n];
+    adj = new int *[n];
     for (int i = 0; i < n; i++) {
         adj[i] = new int[n];
         memset(adj[i], 0, n * sizeof(int));

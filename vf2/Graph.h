@@ -1,7 +1,8 @@
+#include <cstring>
 #include <set>
 #include <vector>
-#include <cstring>
 
+namespace UGraph {
 struct Graph {
     int n;
     int *deg, *label;
@@ -12,6 +13,7 @@ struct Graph {
     void insert(int, int);
     ~Graph();
 };
+}  // namespace UGraph
 
 struct Digraph {
     int n;
