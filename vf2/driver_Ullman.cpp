@@ -17,7 +17,7 @@ bool solve(Graph &P, Graph &G) {
         for (int j = 0; j < G.n; j++)
             if (G.g[i + 1][j + 1]) bb.insert(i, j);
     for (int i = 0; i < G.n; i++) bb.label[i] = G.label[i + 1];
-    Ullmann u = Ullmann(bb, aa);
+    Ullmann u = Ullmann(aa, bb);
     u.subisomorphism();
     return u.found;
 }

@@ -32,7 +32,7 @@ struct Ullmann {
     bool subisomorphism();
     void print_res();
 
-    Ullmann(UGraph &B, UGraph &A) : B(B), A(A) {}
+    Ullmann(UGraph &A, UGraph &B) : A(A), B(B) {}
 };
 
 struct VF2 {
