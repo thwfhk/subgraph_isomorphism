@@ -14,20 +14,22 @@ Properties:
 
 - label: most of the labels are C, O, H, N, S;
 
-## Usage
+## How to test
 
-Compile: `g++ GraphDS.cpp test.cpp -std=c++11 -Wall -o test`
-
-Replace the `#include "GraphQL.cpp"` in `test.cpp` with your code file.
+Replace the `#include "GraphQL/GraphQL.cpp"` in `test.cpp` with your code file.
 
 You need to provide a `bool solve(Graph P, Graph G)` function which does the subgraph isomorphism test in your code file.
 
-Make sure your code use the `Graph` structure defined in `GraphDS.h` and `GraphDS.cpp`.
+Compile: `g++ test.cpp GraphDS.cpp -std=c++11 -Wall -o test`
+
+Run `./test` to test.
+
+Notice: *Make sure your code use the `Graph` structure defined in `GraphDS.h` and `GraphDS.cpp`.*
 
 ## Test
 
 Random draw 100 graphs and find a random subgraph of each graph to form a query set.
-Do subgraph isomorphism test with every pair of the set of 100 graphs and the query set.
+Do subgraph isomorphism test with every pair of the set of 100 graphs and the query set, totally 10000 times.
 
 Results on GraphQL:
 

@@ -10,7 +10,7 @@
 #include <queue>
 #include <cstdlib>
 #include "GraphDS.h"
-#include "GraphQL.cpp" // NOTE: Replace with your file here.
+#include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
 using namespace std;
 
 const int AIDS_TOTAL = 42687;
