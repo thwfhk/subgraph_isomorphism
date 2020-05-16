@@ -1,29 +1,70 @@
-#ifndef Graph_wc
-#define Graph_wc
+#ifndef GRAPH_H
+#define GRAPH_H
+
 #include <cstring>
 #include <set>
+#include <iterator>
 #include <vector>
+#include <algorithm>
+using namespace std;
+typedef pair<int, int> prii;
 
-struct UGraph {
-    int n;
-    int *deg, *label;
-    int **adj;
-    std::vector<std::vector<int>> neigh;
+struct Vertex
+{
+	int id;
+	int label;
+	int seq;
+	bool del;
 
-    UGraph(int);
-    void insert(int, int);
-    ~UGraph();
+	Vertex(int _id = 0, int _label = 0) : id(_id), label(_label), seq(-1), del(0) {}
+	~Vertex() {}
 };
 
-struct Digraph {
-    int n;
-    int *indeg, *outdeg, *label;
-    int **adj;
-    std::vector<std::set<int>> in, out;
+struct Edge
+{
+	int u;
+	int v;
+	int label;
+	int next;
+	bool del;
 
-    Digraph(int);
-    void insert(int, int);
-    ~Digraph();
+	Edge(int _u = 0, int _v = 0, int _label = 0, int _next = -1) : u(_u), v(_v), label(_label), next(_next), del(0) {}
+	~Edge() {}
+
+	bool operator==(const Edge &o) const
+	{
+		return u == o.u && v == o.v && label == o.label;
+	}
+};
+
+class UGraph
+{
+public:
+	UGraph()
+	{
+		memset(head, -1, sizeof(head));
+		vn = 0;
+		en = 0;
+	}
+	~UGraph() {}
+
+	void init();
+	void addv(int id, int label);
+	void addse(int u, int v, int label);
+	void adde(int u, int v, int label);
+	void delse(int u, int v, int label);
+	void dele(int u, int v, int label);
+
+public:
+	const static int maxv = 512;
+	const static int maxe = 512;
+
+public:
+	int head[maxv];
+	int vn;
+	int en;
+	Vertex vtx[maxv]; // 0 to vn-1
+	Edge edge[maxe];  // 0 to en-1
 };
 
 #endif

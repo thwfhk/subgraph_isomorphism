@@ -1,65 +1,51 @@
 #include "Graph.h"
 
-// using namespace UGraph;
-
-UGraph::UGraph(int n) : n(n) {
-    for (int i = 0; i < n; i++) neigh.push_back(std::vector<int>());
-    deg = new int[n];
-    label = new int[n];
-    adj = new int *[n];
-    for (int i = 0; i < n; i++) {
-        adj[i] = new int[n];
-        memset(adj[i], 0, n * sizeof(int));
-    }
-    memset(deg, 0, n * sizeof(int));
-    memset(label, 0, n * sizeof(int));
+void UGraph::init()
+{
+	memset(head, -1, sizeof(head));
+	vn = 0;
+	en = 0;
 }
 
-void UGraph::insert(int i, int j) {
-    deg[i]++;
-    deg[j]++;
-    adj[i][j] = adj[j][i] = 1;
-    neigh[i].push_back(j);
-    neigh[j].push_back(i);
+void UGraph::addv(int id, int label)
+{
+	vtx[id] = Vertex(id, label);
+	vn++;
 }
 
-UGraph::~UGraph() {
-    delete[] deg;
-    delete[] label;
-    for (int i = 0; i < n; i++) delete[] adj[i];
-    delete[] adj;
+void UGraph::addse(int u, int v, int label)
+{
+	edge[en] = Edge(u, v, label, head[u]);
+	head[u] = en++;
 }
 
-Digraph::Digraph(int n) : n(n) {
-    for (int i = 0; i < n; i++) {
-        in.push_back(std::set<int>());
-        out.push_back(std::set<int>());
-    }
-    indeg = new int[n];
-    outdeg = new int[n];
-    label = new int[n];
-    adj = new int *[n];
-    for (int i = 0; i < n; i++) {
-        adj[i] = new int[n];
-        memset(adj[i], 0, n * sizeof(int));
-    }
-    memset(indeg, 0, n * sizeof(int));
-    memset(outdeg, 0, n * sizeof(int));
-    memset(label, 0, n * sizeof(int));
+void UGraph::adde(int u, int v, int label)
+{
+	addse(u, v, label);
+	addse(v, u, label);
 }
 
-void Digraph::insert(int i, int j) {
-    outdeg[i]++;
-    indeg[j]++;
-    adj[i][j] = 1;
-    in[j].insert(i);
-    out[i].insert(j);
+void UGraph::delse(int u, int v, int label)
+{
+	for (int i = head[u]; ~i; i = edge[i].next)
+	{
+		if (edge[i].u == u && edge[i].v == v && edge[i].label == label)
+		{
+			edge[i].del = 1;
+			return;
+		}
+	}
 }
 
-Digraph::~Digraph() {
-    delete[] indeg;
-    delete[] outdeg;
-    delete[] label;
-    for (int i = 0; i < n; i++) delete[] adj[i];
-    delete[] adj;
+void UGraph::dele(int u, int v, int label)
+{
+	for (int i = head[u]; ~i; i = edge[i].next)
+	{
+		if (edge[i].u == u && edge[i].v == v && edge[i].label == label)
+		{
+			edge[i].del = 1;
+			edge[i ^ 1].del = 1;
+			return;
+		}
+	}
 }

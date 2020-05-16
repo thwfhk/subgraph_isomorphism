@@ -1,0 +1,1 @@
+find . -type f -name '*.h' -exec dos2unix '{}' +
