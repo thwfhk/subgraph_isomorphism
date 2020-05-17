@@ -4,7 +4,7 @@
 #include "isomorphism.cpp"
 #include "isomorphism.h"
 
-bool solve(Graph &P, Graph &G)
+bool solve(TGraph::Graph &P, TGraph::Graph &G)
 {
     UGraph aa = UGraph(P.n);
     for (int i = 0; i < P.n; i++)

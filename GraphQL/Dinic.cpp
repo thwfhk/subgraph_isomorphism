@@ -6,6 +6,8 @@
 #include <map>
 #include <queue>
 #include "../GraphDS.h"
+using TGraph::Graph;
+using TGraph::edge;
 using namespace std;
 
 namespace MF {

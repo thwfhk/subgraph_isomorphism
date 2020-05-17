@@ -4,6 +4,7 @@
 
 const int MAXPN = 50; // the maximum size for query graph P
 const int MAX_NODE = 300; // the maximum size for all graphs in the aids dataset
+namespace TGraph {
 
 struct edge {
   int v, ne;
@@ -35,4 +36,7 @@ How to enumerate all edges start from the vertex u:
   }
 How go get the adjacent matrix: just the bool matrix g.
 */
+
+}
+
 #endif

@@ -8,6 +8,8 @@
 
 #include "Dinic.cpp"
 #include "../GraphDS.h"
+using TGraph::Graph;
+using TGraph::edge;
 
 using std::vector;
 

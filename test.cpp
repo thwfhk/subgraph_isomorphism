@@ -11,10 +11,12 @@
 #include <cstdlib>
 #include <ctime>
 #include "GraphDS.h"
-// #include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
-#include "VF2/driver_VF2.cpp" 
+#include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
+// #include "vf2/driver_VF2.cpp" 
 // #include "Ullmann/driver_Ullman.cpp" 
 using namespace std;
+using TGraph::Graph;
+using TGraph::edge;
 
 const int AIDS_TOTAL = 42687;
 const int GRAPHN = 42687 + 5;

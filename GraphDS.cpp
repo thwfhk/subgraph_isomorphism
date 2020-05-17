@@ -1,5 +1,7 @@
 #include <iostream>
 #include "GraphDS.h"
+using TGraph::Graph;
+using TGraph::edge;
 
 
 edge::edge() {}
