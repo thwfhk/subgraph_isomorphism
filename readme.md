@@ -22,6 +22,8 @@ You need to provide a `bool solve(Graph P, Graph G)` function which does the sub
 
 Compile: `g++ test.cpp GraphDS.cpp -std=c++11 -Wall -o test`
 
+(Boost Lib is required for VF2.)
+
 Run `./test` to test.
 
 Notice: *Make sure your code use the `Graph` structure defined in `GraphDS.h` and `GraphDS.cpp`.*
