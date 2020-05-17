@@ -67,18 +67,21 @@ QuickSI::Graph convert(TGraph::Graph &G) {
 }
 
 bool solve(TGraph::Graph &P, TGraph::Graph &G) {
-	P.print();
-	G.print();
+	// P.print();
+	// G.print();
 	QuickSI::Graph Q = convert(P);
 	// for(auto v : Q.nodes) printf("%d %d\n", v.first, v.second.label);
 	// for (auto e : Q.edges) printf("%d %d %d\n", e.from, e.to, e.weight);
 	Q.GetQISeq();
 	// for (auto v : Q.QISeq) printf("%d %d\n", v.label, v.id);
 	// Q.GetQISeq();
-	// for(auto v:Q.QISeq){
-	// 	printf("%d %d %d\n", v.id, v.label, v.parent);
-	// 	printf("extra: ");
-	// 	for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
+	// if (__flag) {
+	// 	int __ = 0;
+	// 	for(auto v:Q.QISeq){
+	// 		printf("%d: %d %d %d\n", __++, v.id, v.label, v.parent);
+	// 		printf("extra: ");
+	// 		for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
+	// 	}
 	// }
 	// exit(123);
 	// for(auto v:Q.QISeq){

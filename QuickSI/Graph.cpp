@@ -176,6 +176,7 @@ void Graph::GetQISeq() {
 			continue;
 		}
 		Edge edge = SpanningEdge(heap);
+		if (in_MST[edge.to]) continue;
 		QISeqEntry entry = MakeEntry(edge.to, pos_in_QISeq[edge.from]);
 		in_MST[edge.to] = 1;
 		pos_in_QISeq[edge.to] = QISeq.size();
