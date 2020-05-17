@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iostream>
 #include <unordered_set>
+using namespace QuickSI;
 
 namespace std {
 

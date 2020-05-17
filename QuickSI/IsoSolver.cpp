@@ -3,7 +3,7 @@
 bool IsoSolver::extra_satisfied(const QISeqEntry &T, const Node &v) {
 	for (const auto &restriction : T.extra) {
 		if (restriction.first == DEG) {
-			if (restriction.second != v.deg) return 0;
+			if (restriction.second > v.deg) return 0;
 		} else if (restriction.first == EDGE) {
 			if (!connected(v, iso[restriction.second])) return 0;
 		}
