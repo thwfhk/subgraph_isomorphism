@@ -176,8 +176,15 @@ bool Ullmann::check(int d, int k)
 
 void Ullmann::match(int depth)
 {
-    if (found)
+    if (found || timeout)
         return;
+    if ((clock() - tik) / CLOCKS_PER_SEC >= 5)
+    {
+        if (!found)
+            printf("Warning: execution time exceeded the time-out. Skip.\n");
+        timeout = true;
+        return;
+    }
     if (depth >= A.n)
     {
         for (int i = 0; i < A.n; i++)
@@ -222,6 +229,7 @@ bool Ullmann::subisomorphism()
                 M[i][j] = 1;
     F = new int[vb];
     memset(F, 0, vb * sizeof(int));
+    tik = clock();
     match(0);
     delete[] F;
     for (int i = 0; i < va; i++)

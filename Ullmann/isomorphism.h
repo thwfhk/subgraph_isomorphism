@@ -1,6 +1,6 @@
 #ifndef Iso_wc
 #define Iso_wc
-#include <map>
+#include <ctime>
 
 #include "Graph.h"
 
@@ -26,7 +26,8 @@ struct Ullmann
     UGraph &A, &B;
     int *res = NULL, *F;
     int **M;
-    bool found;
+    bool found, timeout = false;
+    double tik;
 
     bool check(int, int);
     void match(int);
