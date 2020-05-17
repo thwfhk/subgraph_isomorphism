@@ -7,6 +7,7 @@
 extern std::random_device dev;
 extern std::mt19937 rng;
 
+namespace QuickSI {
 Edge::Edge() {}
 Edge::Edge(int from, int to, int weight) : from(from), to(to), weight(weight) {}
 
@@ -23,7 +24,7 @@ bool Edge::operator!=(const Edge &rhs) const {
 }
 
 Node::Node() {}
-Node::Node(short label, int weight) : label(label), weight(weight) {}
+Node::Node(short label, int weight) : label(label), weight(weight), deg(0) {}
 
 int BaseGraph::AddNode(short label, int weight) {
 	int t = nodes.size();
@@ -94,7 +95,7 @@ Edge Graph::SpanningEdge(std::priority_queue<Edge> &heap) {
 	std::vector<std::pair<Edge, int>> tmp; // pair(edge, ind_size)
 	Edge u = heap.top();
 	heap.pop(), tmp.push_back(std::make_pair(u, 0));
-	while (heap.top().weight == u.weight) {
+	while (!heap.empty() && heap.top().weight == u.weight) {
 		tmp.push_back(std::make_pair(heap.top(), 0));
 		heap.pop();
 	}
@@ -170,7 +171,10 @@ void Graph::GetQISeq() {
 		}
 	}
 	while (!heap.empty()) {
-		if (in_MST[heap.top().to]) continue;
+		if (in_MST[heap.top().to]) {
+			heap.pop();
+			continue;
+		}
 		Edge edge = SpanningEdge(heap);
 		QISeqEntry entry = MakeEntry(edge.to, pos_in_QISeq[edge.from]);
 		in_MST[edge.to] = 1;
@@ -179,7 +183,7 @@ void Graph::GetQISeq() {
 		for (const auto &e : nodes[edge.to].adj) {
 			if (!in_MST[e.to]) {
 				heap.push(e);
-			} else {
+			} else if (e.to != edge.from) {
 				extra_edge.push_back(e);
 			}
 		}
@@ -245,3 +249,4 @@ std::size_t Tree::get_hash() const {
 	assert(has_hashed);
 	return hash;
 }
+} // namespace QuickSI

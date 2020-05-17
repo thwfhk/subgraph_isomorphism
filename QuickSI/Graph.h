@@ -7,6 +7,7 @@
 #include <random>
 #include <unordered_map>
 
+namespace QuickSI {
 class Edge {
 public:
 	int from, to;
@@ -43,7 +44,6 @@ public:
 const int INF = 0x7fffffff;
 
 class Graph : public BaseGraph { // Graph with QISeq
-	std::vector<QISeqEntry> QISeq;
 	std::unordered_map<int, bool> in_MST;
 	std::unordered_map<int, int> pos_in_QISeq;
 
@@ -53,6 +53,7 @@ class Graph : public BaseGraph { // Graph with QISeq
 	QISeqEntry MakeEntry(int u, int p);
 
 public:
+	std::vector<QISeqEntry> QISeq;
 	void GetQISeq();
 
 	friend class Preprocessor;
@@ -74,5 +75,5 @@ public:
 	std::size_t calc_hash();
 	std::size_t get_hash() const;
 };
-
+} // namespace QuickSI
 #endif
