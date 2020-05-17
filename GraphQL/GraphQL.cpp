@@ -142,14 +142,15 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
 bool check(int u, int v, vector<int> *Phi, int *phi, Graph &P, Graph &G) {
   for (int i = P.h[u]; i; i = P.e[i].ne) {
     int ut = P.e[i].v;
-    if (Phi[ut].size() >= Phi[u].size()) continue; // NOTE: order |Phi|
+    if (make_pair(Phi[ut].size(), ut) > make_pair(Phi[u].size(), u)) continue; // NOTE: order |Phi|
     if (!G.g[v][phi[ut]]) return false;
   }
   return true;
 }
 
 // main search
-bool dfs(vector<pair<int, int> > &li, int cur, int n, vector<int> *Phi, bool *used, int *phi, Graph &P, Graph &G) {
+bool dfs(vector<pair<int, int> > &li, int cur, int n, 
+  vector<int> *Phi, bool *used, int *phi, Graph &P, Graph &G) {
   int u = li[cur-1].second; // u in P
   for (int v : Phi[u]) if (!used[v]) {
     if (!check(u, v, Phi, phi, P, G)) continue;

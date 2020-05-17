@@ -76,6 +76,6 @@ void test(int set_number) {
 
 int main() {
   vector<int> vec {4, 8, 12, 16, 20, 24};
-  // vector<int> vec {4};
+  // vector<int> vec {8};
   for (int v : vec) test(v);
 }
