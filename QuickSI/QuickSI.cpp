@@ -1,3 +1,5 @@
+#define QUICKSI
+
 #include "../GraphDS.h"
 #include "IsoSolver.h"
 // #include "Preprocessor.h"

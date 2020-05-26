@@ -15,21 +15,22 @@
 // #include "VF2/driver_VF2.cpp" 
 // #include "VF2/driver_Boost.cpp" 
 // #include "Ullmann/driver_Ullman.cpp" 
+// #include "QuickSI/QuickSI.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
 using namespace std;
-using TGraph::Graph;
-using TGraph::edge;
+// using TGraph::Graph;
+// using TGraph::edge;
 
 const int AIDS_TOTAL = 42687;
 const int GRAPHN = 42687 + 5;
 
-Graph* gs[GRAPHN];
-Graph* qs[GRAPHN];
+TGraph::Graph* gs[GRAPHN];
+TGraph::Graph* qs[GRAPHN];
 
 int getrand(int n) {
   return rand() % n + 1;
 }
 
-void load_data(string file_name, int data_num, Graph* gs[GRAPHN]) {
+void load_data(string file_name, int data_num, TGraph::Graph* gs[GRAPHN]) {
   ifstream fin(file_name);
   for(int i = 1; i <= data_num; i++) {
     // printf("i %d\n", i);
@@ -37,7 +38,7 @@ void load_data(string file_name, int data_num, Graph* gs[GRAPHN]) {
     int n, m;
     getline(fin, s);
     fin >> n >> m; //printf("nm %d %d\n", n, m);
-    gs[i] = new Graph(n, m);
+    gs[i] = new TGraph::Graph(n, m);
     gs[i]->id = to_string(i);
     for(int j=1; j<=n; j++) {
       int l;
@@ -61,12 +62,12 @@ void test(int set_number) {
   double total_time = 0;
   int qn = 100, gn = 100; // NOTE: only 100 here!
   int total_match = 0;
-  #ifdef QuickSI
+  #ifdef QUICKSI
   initialize(1000, gs);
   #endif
   for (int i=1; i<=qn; i++)
     for (int j=1; j<=gn; j++) {
-      Graph &P = *qs[i], &G = *gs[j];
+      TGraph::Graph &P = *qs[i], &G = *gs[j];
       double begin = clock();
       bool res = solve(P, G);
       total_match += res;
