@@ -11,10 +11,10 @@
 #include <cstdlib>
 #include <ctime>
 #include "GraphDS.h"
-// #include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
+#include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
 // #include "VF2/driver_VF2.cpp" 
 // #include "VF2/driver_Boost.cpp" 
-#include "Ullmann/driver_Ullman.cpp" 
+// #include "Ullmann/driver_Ullman.cpp" 
 using namespace std;
 using TGraph::Graph;
 using TGraph::edge;
@@ -61,6 +61,9 @@ void test(int set_number) {
   double total_time = 0;
   int qn = 100, gn = 100; // NOTE: only 100 here!
   int total_match = 0;
+  #ifdef QuickSI
+  initialize(1000, gs);
+  #endif
   for (int i=1; i<=qn; i++)
     for (int j=1; j<=gn; j++) {
       Graph &P = *qs[i], &G = *gs[j];
