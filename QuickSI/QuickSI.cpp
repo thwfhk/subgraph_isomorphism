@@ -39,6 +39,8 @@ const int __N = 42687 + 5;
 void initialize(int data_num, TGraph::Graph *gs[__N]) {
 	rng = std::mt19937(dev());
 
+	label_weights.clear();
+	edge_weights.clear();
 	for (int i = 1; i <= data_num; i++) {
 		for (int v = 1; v <= gs[i]->n; v++) {
 			short lv = gs[i]->label[v];
