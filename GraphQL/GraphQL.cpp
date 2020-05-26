@@ -176,7 +176,7 @@ bool solve(Graph &P, Graph &G) {
   optimize1Phi(P, G, Phi, 1);
   // puts("Optimization1: "); print_Phi(P, Phi);
 
-  optimize2Phi(P, G, Phi, 1);
+  // optimize2Phi(P, G, Phi, 1);
   // puts("Optimization2: "); print_Phi(P, Phi);
 
   int *phi = new int [P.n+1];
