@@ -57,8 +57,25 @@ public:
 } // namespace std
 
 template <class ContainerType, class Pred>
-bool find_if(const ContainerType &v, Pred f);
+bool find_if(const ContainerType &v, Pred f) {
+	return std::find_if(v.begin(), v.end(), f) != v.end();
+}
 
 bool connected(const Node &v, int u);
+
+template <class InputIterator1, class InputIterator2, class OutputIterator, class CompareLess, class CompareGreater>
+OutputIterator Set_intersection(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2, OutputIterator result, CompareLess less, CompareGreater greater) {
+	while (first1 != last1 && first2 != last2) {
+		if (less(*first1, *first2)) ++first1;
+		else if (greater(*first1, *first2)) ++first2;
+		else {
+			*result = *first2;
+			++result;
+			++first1;
+			++first2;
+		}
+	}
+	return result;
+}
 
 #endif

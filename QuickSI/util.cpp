@@ -57,11 +57,6 @@ template class hash<Tree>;
 
 } // namespace std
 
-template <class ContainerType, class Pred>
-bool find_if(const ContainerType &v, Pred f) {
-	return std::find_if(v.begin(), v.end(), f) != v.end();
-}
-
 bool connected(const Node &v, int u) {
 	return find_if(v.adj, [&u](const Edge &e) { return e.to == u; });
 }

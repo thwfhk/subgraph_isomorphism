@@ -10,15 +10,15 @@ class IsoSolver {
 	std::unordered_map<int, bool> used;
 	int size;
 	const std::vector<QISeqEntry> &QISeq;
-	const Graph &G;
+	Graph &G;
 
 	bool extra_satisfied(const QISeqEntry &T, const Node &v);
-	bool dfs(int dep);
+	bool dfs(int dep, std::vector<int> *Phi = nullptr);
 
 public:
-	IsoSolver(const Graph &query, const Graph &G);
+	IsoSolver(const Graph &query, Graph &G);
 
-	bool QuickSI();
+	bool QuickSI(std::vector<int> *Phi = nullptr);
 };
 
 #endif

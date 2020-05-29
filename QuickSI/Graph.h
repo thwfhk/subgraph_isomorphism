@@ -26,7 +26,7 @@ public:
 	int deg;
 	int weight;
 	short label;
-	std::list<Edge> adj;
+	std::vector<Edge> adj;
 
 	Node();
 	Node(short label, int weight);
