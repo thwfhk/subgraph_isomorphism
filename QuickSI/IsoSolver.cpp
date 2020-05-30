@@ -11,18 +11,29 @@ bool IsoSolver::extra_satisfied(const QISeqEntry &T, const Node &v) {
 	return 1;
 }
 
-bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> *Eq) {
+bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> &fa) {
 	if (dep >= size) return 1;
 	QISeqEntry T = QISeq[dep];
 	if (!dep) {
 		if (Phi) {
-			for (int v : Phi[T.id + 1]) {
+			std::list<int> Candidates;
+			std::copy(Phi[T.id + 1].begin(), Phi[T.id + 1].end(), std::back_inserter(Candidates));
+			for (auto i = Candidates.begin(); i != Candidates.end(); ++i) {
+				int v = *i;
 				if (!used[v]) {
 					if (extra_satisfied(T, G.nodes[v])) {
 						used[v] = 1;
 						iso[dep] = v;
-						if (dfs(dep + 1, Phi, Eq)) return 1;
+						if (dfs(dep + 1, Phi, fa)) return 1;
 						used[v] = 0;
+						auto t = i;
+						++t;
+						for (auto j = t; j != Candidates.end();) {
+							if (getfa(fa, *i) == getfa(fa, *j)) {
+								j = Candidates.erase(j);
+							}
+							else ++j;
+						}
 					}
 				}
 			}
@@ -32,7 +43,7 @@ bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> *Eq) {
 					if (extra_satisfied(T, v.second)) {
 						used[v.first] = 1;
 						iso[dep] = v.first;
-						if (dfs(dep + 1, Phi, Eq)) return 1;
+						if (dfs(dep + 1, Phi, fa)) return 1;
 						used[v.first] = 0;
 					}
 				}
@@ -40,7 +51,7 @@ bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> *Eq) {
 		}
 	} else {
 		if (Phi) {
-			std::vector<int> Candidates(G.nodes.size());
+			std::list<int> Candidates(G.nodes.size());
 			auto end = Set_intersection(G.nodes[iso[T.parent]].adj.begin(), G.nodes[iso[T.parent]].adj.end(),
 							 Phi[T.id + 1].begin(), Phi[T.id + 1].end(),
 							 Candidates.begin(),
@@ -58,13 +69,22 @@ bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> *Eq) {
 			// 	printf("%d ", x);
 			// }puts("");
 			// puts("-------------------");
-			for (int v : Candidates) {
+			for (auto i = Candidates.begin(); i != Candidates.end(); ++i) {
+				int v = *i;
 				if (G.nodes[v].label == T.label && !used[v]) {
 					if (extra_satisfied(T, G.nodes[v])) {
 						used[v] = 1;
 						iso[dep] = v;
-						if (dfs(dep + 1, Phi, Eq)) return 1;
+						if (dfs(dep + 1, Phi, fa)) return 1;
 						used[v] = 0;
+						auto t = i;
+						++t;
+						for (auto j = t; j != Candidates.end();) {
+							if (getfa(fa, *i) == getfa(fa, *j)) {
+								j = Candidates.erase(j);
+							}
+							else ++j;
+						}
 					}
 				}
 			}
@@ -79,7 +99,7 @@ bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> *Eq) {
 						if (extra_satisfied(T, node)) {
 							used[v] = 1;
 							iso[dep] = v;
-							if (dfs(dep + 1, Phi, Eq)) return 1;
+							if (dfs(dep + 1, Phi, fa)) return 1;
 							used[v] = 0;
 						}
 					}
@@ -94,7 +114,7 @@ IsoSolver::IsoSolver(const Graph &query, Graph &G) : QISeq(query.QISeq), G(G) {
 	size = QISeq.size();
 }
 
-bool IsoSolver::QuickSI(std::vector<int> *Phi, std::vector<int> *Eq) {
+bool IsoSolver::QuickSI(std::vector<int> *Phi, std::vector<int> &fa) {
 	iso.clear(), used.clear();
-	return dfs(0, Phi, Eq);
+	return dfs(0, Phi, fa);
 }
