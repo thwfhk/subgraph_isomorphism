@@ -3,6 +3,7 @@
 #include "../GraphDS.h"
 #include "IsoSolver.h"
 // #include "Preprocessor.h"
+#include <set>
 
 std::random_device dev;
 std::mt19937 rng;
@@ -141,6 +142,36 @@ void optimize1Phi(TGraph::Graph &P, TGraph::Graph &G, std::vector<int> *Phi, int
 	}
 }
 
+void calc_eq(const QuickSI::Graph &G, std::vector<int> *Eq, std::vector<int> &fa) {
+	for (int i = 0; i < G.nodes.size(); i++) fa[i] = i;
+	for (auto i = G.nodes.cbegin(); i != G.nodes.cend(); ++i) {
+		auto t = i;
+		++t;
+		for (auto j = t; j != G.nodes.cend(); ++j) {
+			if (getfa(fa, i->first) != getfa(fa, j->first)) {
+				std::set<int> neighbor_i, neighbor_j;
+				for (const auto &e : i->second.adj) {
+					neighbor_i.insert(e.to);
+				}
+				for (const auto &e : j->second.adj) {
+					neighbor_j.insert(e.to);
+				}
+				if (neighbor_i == neighbor_j) {
+					fa[getfa(fa, i->first)] = getfa(fa, j->first);
+				}
+			}
+		}
+	}
+	for (int i = 0; i < G.nodes.size(); i++) {
+		for (int j = i + 1; j < G.nodes.size(); j++) {
+			if (getfa(fa, i) == getfa(fa, j)) {
+				Eq[i].push_back(j);
+				Eq[j].push_back(i);
+			}
+		}
+	}
+}
+
 bool solve(TGraph::Graph &P, TGraph::Graph &G) {
 	// P.print();
 	// G.print();
@@ -175,8 +206,11 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G) {
 	QuickSI::Graph G_ = convert(G);
 	// for(auto v : G_.nodes) printf("%d %d %d\n", v.first, v.second.label, v.second.deg);
 	// for (auto e : G_.edges) printf("%d %d %d\n", e.from, e.to, e.weight);
+	std::vector<int> *Eq = new std::vector<int>[P.n + 1];
+	std::vector<int> fa(G.n + 1);
+	// calc_eq(G_, Eq, fa);
 	IsoSolver solver(Q, G_);
-	return solver.QuickSI(Phi);
+	return solver.QuickSI(Phi, Eq);
 }
 
 // int main() {

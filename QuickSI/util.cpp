@@ -60,3 +60,5 @@ template class hash<Tree>;
 bool connected(const Node &v, int u) {
 	return find_if(v.adj, [&u](const Edge &e) { return e.to == u; });
 }
+
+int getfa(std::vector<int> &fa, int x) { return x == fa[x] ? x : fa[x] = getfa(fa, fa[x]); }

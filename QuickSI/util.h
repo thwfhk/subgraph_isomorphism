@@ -78,4 +78,6 @@ OutputIterator Set_intersection(InputIterator1 first1, InputIterator1 last1, Inp
 	return result;
 }
 
+int getfa(std::vector<int> &fa, int x);
+
 #endif
