@@ -19,7 +19,8 @@ namespace MF {
     e[++cnt] = (edge) {v, h[u], c, 0}; h[u] = cnt;
     e[++cnt] = (edge) {u, h[v], 0, 0}; h[v] = cnt;
   }
-  int cur[MAX_NODE], vis[MAX_NODE], d[MAX_NODE], head, tail, q[MAX_NODE];
+  int cur[MAX_NODE], d[MAX_NODE], head, tail, q[MAX_NODE];
+  bool vis[MAX_NODE];
   bool bfs() {
     memset(vis, 0, sizeof(vis));
     head = tail = 1;

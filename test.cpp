@@ -11,12 +11,12 @@
 #include <cstdlib>
 #include <ctime>
 #include "GraphDS.h"
-// #include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
+#include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
 // #include "VF2/driver_VF2.cpp" 
 // #include "VF2/driver_Boost.cpp" 
 // #include "Ullmann/driver_Ullman.cpp" 
 // #include "QuickSI/QuickSI.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
-#include "QuickSI/QuickSI_with_selected_candidates.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
+// #include "QuickSI/QuickSI_with_selected_candidates.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
 using namespace std;
 // using TGraph::Graph;
 // using TGraph::edge;

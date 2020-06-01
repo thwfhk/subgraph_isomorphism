@@ -36,16 +36,16 @@ Do subgraph isomorphism test with every pair of the set of 100 graphs and the qu
 Results on GraphQL:
 
 ```
-average time of queryset 4: 0.000182
+average time of queryset 4: 0.000200
 total match 4302 / 10000
-average time of queryset 8: 0.000335
-total match 985 / 10000
-average time of queryset 12: 0.000488
-total match 226 / 10000
-average time of queryset 16: 0.000630
-total match 118 / 10000
-average time of queryset 20: 0.000807
+average time of queryset 8: 0.000350
+total match 977 / 10000
+average time of queryset 12: 0.000507
+total match 222 / 10000
+average time of queryset 16: 0.000686
+total match 115 / 10000
+average time of queryset 20: 0.000856
 total match 97 / 10000
-average time of queryset 24: 0.000978
+average time of queryset 24: 0.001040
 total match 65 / 10000
 ```

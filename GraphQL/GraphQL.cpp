@@ -33,6 +33,7 @@ void initialPhi(Graph &P, Graph &G, vector<int> *Phi) {
   }
 }
 
+// current d level, max r level
 void getNeighbor(Graph &G, int d, int u, int r, vector<int> &neighbor, bool useLabel = true) {
   if (d != 0) {
     if (useLabel) neighbor.push_back(G.label[u]);
@@ -82,6 +83,7 @@ void optimize1Phi(Graph &P, Graph &G, vector<int> *Phi, int r) {
   }
 }
 
+
 void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
   static bool inqt[MAXPN][MAXPN];
   memset(inqt, 0, sizeof(inqt));
@@ -92,6 +94,10 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
       q.push({u, v});
     }
 
+  set<int> *PhiSet = new set<int>[P.n+1];
+  for (int u = 1; u <= P.n; u++) {
+    for (int v : Phi[u]) PhiSet[u].insert(v);
+  }
   for (int i = 1; i <= l; i++) {
     // qt is used to store the (u,v) pairs needed to be updated in the next level
     queue<pair<int, int> > qt;
@@ -101,19 +107,20 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
       int u = x.first, v = x.second;
       vector<int> neighbor_u; getNeighbor(P, 0, u, 1, neighbor_u, false);
       vector<int> neighbor_v; getNeighbor(G, 0, v, 1, neighbor_v, false);
-      // printf("-----------------now(%d,%d)-----------------\n", u, v);
+      //printf("-----------------now(%d,%d)-----------------\n", u, v);
       //print_vector(neighbor_u);
       //print_vector(neighbor_v);
 
       // build bi-graph
       MF::init(P.n+G.n+1);
+      MF::s = 0; MF::t = P.n + G.n + 1;
       for (int u : neighbor_u) 
         for (int v : neighbor_v) {
-          if (find(Phi[u].begin(), Phi[u].end(), v) != Phi[u].end()) {
+          // if (find(Phi[u].begin(), Phi[u].end(), v) != Phi[u].end()) {
+          if (PhiSet[u].count(v)) {
             MF::ins(u, P.n + v, 1);
           }
         }
-      MF::s = 0; MF::t = P.n + G.n + 1;
       for (int u : neighbor_u) MF::ins(MF::s, u, 1);
       for (int v : neighbor_v) MF::ins(P.n + v, MF::t, 1);
 
@@ -123,11 +130,13 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
       // printf("flow %d %d\n", flow, maximum);
       if (flow < maximum) {
         //printf("not match (%d, %d)\n", u, v);
-        Phi[u].erase(find(Phi[u].begin(), Phi[u].end(), v));
+        // Phi[u].erase(find(Phi[u].begin(), Phi[u].end(), v));
+        PhiSet[u].erase(v);
         for (int ut : neighbor_u) 
           for (int vt : neighbor_v) {
             //printf("repeat %d %d\n", ut, vt);
-            if (!inqt[ut][vt] && find(Phi[ut].begin(), Phi[ut].end(), vt) != Phi[ut].end()) {
+            // if (!inqt[ut][vt] && find(Phi[ut].begin(), Phi[ut].end(), vt) != Phi[ut].end()) {
+              if (!inqt[ut][vt] && PhiSet[ut].count(vt)) {
               qt.push({ut, vt});
               inqt[ut][vt] = true;
             }
@@ -137,16 +146,13 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
     q = qt;
     //printf("qt %d  (%d,%d)\n", qt.size(), qt.front().first, qt.front().second);
   }
+  for (int u = 1; u <= P.n; u++) {
+    Phi[u].clear();
+    for (int v : PhiSet[u]) Phi[u].push_back(v);
+  }
 }
 
-bool check(int u, int v, vector<int> *Phi, int *phi, Graph &P, Graph &G) {
-  for (int i = P.h[u]; i; i = P.e[i].ne) {
-    int ut = P.e[i].v;
-    if (make_pair(Phi[ut].size(), ut) > make_pair(Phi[u].size(), u)) continue; // NOTE: order |Phi|
-    if (!G.g[v][phi[ut]]) return false;
-  }
-  return true;
-}
+
 
 // main search
 bool dfs(vector<pair<int, int> > &li, int cur, int n, 
@@ -176,7 +182,7 @@ bool solve(Graph &P, Graph &G) {
   optimize1Phi(P, G, Phi, 1);
   // puts("Optimization1: "); print_Phi(P, Phi);
 
-  // optimize2Phi(P, G, Phi, 1);
+  optimize2Phi(P, G, Phi, 1); // l=1没什么意思呀，但是l=2的话常数显著影响QwQ
   // puts("Optimization2: "); print_Phi(P, Phi);
 
   int *phi = new int [P.n+1];
