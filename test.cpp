@@ -75,7 +75,12 @@ void test(int set_number) {
       // printf("i j %d %d\n", i, j);
       TGraph::Graph &P = *qs[i], &G = *gs[j];
       double begin = clock();
+      #ifdef QUICKSI
+      bool res = solve(P, G, j);
+      #endif
+      #ifndef QUICKSI
       bool res = solve(P, G);
+      #endif
       total_match += res;
       total_time += (clock() - begin) / CLOCKS_PER_SEC;
       // cout << "sub-iso " << P.id << " " << G.id << " " << solve(P, G) << "\n";
