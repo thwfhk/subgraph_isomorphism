@@ -23,8 +23,8 @@ int main() {
   // }
   // for (int i=1; i<=2*mu; i++) printf("%d : %d\n", i, c[i]);
 
-  ifstream fin("dataset/dblp/dblp100.data");
-  ofstream fout("dataset/dblp_withlabel/dblp100/dblp100.data");
+  ifstream fin("dataset/dblp/dblp500.data");
+  ofstream fout("dataset/dblp_withlabel/dblp500/dblp500.data");
   int total = 100;
   for (int i=1; i<=total; i++) {
     string s;
@@ -40,9 +40,11 @@ int main() {
     while (sin >> x) fout << get_num() << " ";
     fout << "\n";
     for (int j=1; j<=m; j++) {
-      getline(fin, s);
-      fout << s << "\n";
+      int u, v;
+      fin >> u >> v;
+      fout << u+1 << " " << v+1 << "\n";
     }
+    getline(fin, s); // just a "\n"
     getline(fin, s); // empty line
     fout << s << "\n";
   }

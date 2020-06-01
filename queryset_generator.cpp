@@ -155,7 +155,7 @@ int main() {
   int data_cnt = DBLP_TOTAL;
   // load_data("dataset/aids/aids.data", data_cnt, gs);
   // sample(data_cnt, 1000, "dataset/aids/query");
-  load_data("dataset/dblp_withlabel/dblp500/dblp500.data", data_cnt, gs);
+  load_data("dataset/dblp_withlabel/dblp1000/dblp1000.data", data_cnt, gs);
   cout << "hi" << endl;
-  sample(data_cnt, 100, "dataset/dblp_withlabel/dblp500/query");
+  sample(data_cnt, 100, "dataset/dblp_withlabel/dblp1000/query");
 }
