@@ -105,6 +105,8 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
     while (!q.empty()) {
       pair<int, int> x = q.front(); q.pop();
       int u = x.first, v = x.second;
+      if (inqt[u][v]) inqt[u][v] = false;
+      if (PhiSet[u].count(v) == 0) continue;
       vector<int> neighbor_u; getNeighbor(P, 0, u, 1, neighbor_u, false);
       vector<int> neighbor_v; getNeighbor(G, 0, v, 1, neighbor_v, false);
       //printf("-----------------now(%d,%d)-----------------\n", u, v);
@@ -190,7 +192,7 @@ bool solve(Graph &P, Graph &G) {
   optimize1Phi(P, G, Phi, 1);
   // puts("Optimization1: "); print_Phi(P, Phi);
 
-  optimize2Phi(P, G, Phi, 1); // l=1没什么意思呀，但是l=2的话常数显著影响QwQ
+  optimize2Phi(P, G, Phi, 2); // l=1没什么意思呀，但是l=2的话常数显著影响QwQ
   // puts("Optimization2: "); print_Phi(P, Phi);
 
   int *phi = new int [P.n+1];
