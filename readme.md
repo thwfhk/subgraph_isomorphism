@@ -88,6 +88,22 @@ total match 65 / 10000
 
 dblp 500:
 ```
+average time of queryset 4: 0.000712
+total match 3909 / 10000
+average time of queryset 8: 0.001289
+total match 444 / 10000
+average time of queryset 12: 0.002032
+total match 180 / 10000
+average time of queryset 16: 0.002670
+total match 118 / 10000
+average time of queryset 20: 0.003447
+total match 99 / 10000
+average time of queryset 24: 0.003999
+total match 96 / 10000
+```
+
+GraphQL2 dblp500:
+```
 average time of queryset 4: 0.000762
 total match 3909 / 10000
 average time of queryset 8: 0.001284
