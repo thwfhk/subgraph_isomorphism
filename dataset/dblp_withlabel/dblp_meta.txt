@@ -1,0 +1,44 @@
+edges: 1049866, 2.1e6
+nodes: 317080 编号到425876, 5e5
+
+---
+
+label generator: N(15,5) 限制在[0,30]上的整数
+
+---
+
+dblp1000.data meta info:
+sum: 103416
+aver: 1034
+max: 1389
+min: 775
+edge aver: 2986
+
+---
+
+dblp500.data meta info:
+sum: 51016
+aver: 510
+max: 592
+min: 433
+edge aver: 1368
+
+---
+
+dblp200.data meta info:
+sum: 20335
+aver: 203
+max: 222
+min: 180
+edge aver: 489
+
+---
+
+dblp100.data meta info:
+sum: 10321
+aver: 103
+max: 117
+min: 89
+edge aver: 249
+
+---

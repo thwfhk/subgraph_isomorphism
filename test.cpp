@@ -11,8 +11,8 @@
 #include <cstdlib>
 #include <ctime>
 #include "GraphDS.h"
-// #include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
-#include "GraphQL/GraphQL2.cpp" // NOTE: Replace with your file here.
+#include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
+// #include "GraphQL/GraphQL2.cpp" // NOTE: Replace with your file here.
 // #include "VF2/driver_VF2.cpp" 
 // #include "VF2/driver_Boost.cpp" 
 // #include "Ullmann/driver_Ullman.cpp" 
@@ -59,16 +59,20 @@ void load_data(string file_name, int data_num, TGraph::Graph* gs[GRAPHN]) {
 
 // set_number 4 8 12 16 20 24
 void test(int set_number) {
-  load_data("dataset/aids/aids.data", 1000, gs);
-  load_data("dataset/aids/query" + to_string(set_number) + ".data", 1000, qs);
+  // printf("test begin --- queryset: %d\n", set_number);
+  // load_data("dataset/aids/aids.data", 1000, gs);
+  // load_data("dataset/aids/query" + to_string(set_number) + ".data", 1000, qs);
+  load_data("dataset/dblp_withlabel/dblp500/dblp500.data", 100, gs);
+  load_data("dataset/dblp_withlabel/dblp500/query" + to_string(set_number) + ".data", 100, qs);
   double total_time = 0;
   int qn = 100, gn = 100; // NOTE: only 100 here!
   int total_match = 0;
   #ifdef QUICKSI
-  initialize(1000, gs);
+  initialize(100, gs);
   #endif
   for (int i=1; i<=qn; i++)
     for (int j=1; j<=gn; j++) {
+      // printf("i j %d %d\n", i, j);
       TGraph::Graph &P = *qs[i], &G = *gs[j];
       double begin = clock();
       bool res = solve(P, G);
