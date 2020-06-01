@@ -3,8 +3,9 @@
 #include "../GraphDS.h"
 #include "IsoSolver.h"
 // #include "Preprocessor.h"
+#include "../GraphQL/Dinic.cpp"
+#include <cstring>
 #include <set>
-
 std::random_device dev;
 std::mt19937 rng;
 
@@ -47,6 +48,7 @@ void initialize(int data_num, TGraph::Graph *gs[__N]) {
 	label_weights.clear();
 	edge_weights.clear();
 	for (int g_i = 1; g_i <= data_num; g_i++) {
+		// printf("%d\n", g_i);
 		for (int v = 1; v <= gs[g_i]->n; v++) {
 			short lv = gs[g_i]->label[v];
 			label_weights[lv]++;
@@ -57,7 +59,8 @@ void initialize(int data_num, TGraph::Graph *gs[__N]) {
 			}
 		}
 		fa[g_i].resize(gs[g_i]->n + 2);
-		for (int i = 1; i <= gs[g_i]->n; i++) fa[g_i][i] = i;
+		for (int i = 1; i <= gs[g_i]->n; i++)
+			fa[g_i][i] = i;
 		for (int i = 1; i <= gs[g_i]->n; i++) {
 			for (int j = i + 1; j <= gs[g_i]->n; j++) {
 				if (getfa(fa[g_i], i) != getfa(fa[g_i], j)) {
@@ -74,8 +77,11 @@ void initialize(int data_num, TGraph::Graph *gs[__N]) {
 				}
 			}
 		}
-		for (int i = 1; i <= gs[g_i]->n; i++) fa[g_i][i - 1] = fa[g_i][i] - 1;
+		for (int i = 1; i <= gs[g_i]->n; i++)
+			fa[g_i][i - 1] = fa[g_i][i] - 1;
 	}
+	puts("initialize finished");
+	// exit(233);
 }
 
 QuickSI::Graph convert(TGraph::Graph &G) {
@@ -163,6 +169,83 @@ void optimize1Phi(TGraph::Graph &P, TGraph::Graph &G, std::vector<int> *Phi, int
 	}
 }
 
+void optimize2Phi(TGraph::Graph &P, TGraph::Graph &G, std::vector<int> *Phi, int l) {
+	static bool inqt[MAXPN][MAXPN];
+	std::memset(inqt, 0, sizeof(inqt));
+
+	queue<pair<int, int>> q;
+	for (int u = 1; u <= P.n; u++)
+		for (int v : Phi[u]) {
+			q.push({u, v});
+		}
+
+	set<int> *PhiSet = new set<int>[P.n + 1];
+	for (int u = 1; u <= P.n; u++) {
+		for (int v : Phi[u])
+			PhiSet[u].insert(v);
+	}
+	for (int i = 1; i <= l; i++) {
+		// qt is used to store the (u,v) pairs needed to be updated in the next level
+		queue<pair<int, int>> qt;
+		memset(inqt, 0, sizeof(inqt));
+		while (!q.empty()) {
+			pair<int, int> x = q.front();
+			q.pop();
+			int u = x.first, v = x.second;
+			if (inqt[u][v]) inqt[u][v] = false;
+			if (PhiSet[u].count(v) == 0) continue;
+			vector<int> neighbor_u;
+			getNeighbor(P, 0, u, 1, neighbor_u, false);
+			vector<int> neighbor_v;
+			getNeighbor(G, 0, v, 1, neighbor_v, false);
+			//printf("-----------------now(%d,%d)-----------------\n", u, v);
+			//print_vector(neighbor_u);
+			//print_vector(neighbor_v);
+
+			// build bi-graph
+			MF::init(P.n + G.n + 1);
+			MF::s = 0;
+			MF::t = P.n + G.n + 1;
+			for (int u : neighbor_u)
+				for (int v : neighbor_v) {
+					// if (find(Phi[u].begin(), Phi[u].end(), v) != Phi[u].end()) {
+					if (PhiSet[u].count(v)) {
+						MF::ins(u, P.n + v, 1);
+					}
+				}
+			for (int u : neighbor_u)
+				MF::ins(MF::s, u, 1);
+			for (int v : neighbor_v)
+				MF::ins(P.n + v, MF::t, 1);
+
+			// if there's no perfect matching
+			int flow = MF::dinic(), maximum = neighbor_u.size();
+
+			// printf("flow %d %d\n", flow, maximum);
+			if (flow < maximum) {
+				//printf("not match (%d, %d)\n", u, v);
+				// Phi[u].erase(find(Phi[u].begin(), Phi[u].end(), v));
+				PhiSet[u].erase(v);
+				for (int ut : neighbor_u)
+					for (int vt : neighbor_v) {
+						//printf("repeat %d %d\n", ut, vt);
+						// if (!inqt[ut][vt] && find(Phi[ut].begin(), Phi[ut].end(), vt) != Phi[ut].end()) {
+						if (!inqt[ut][vt] && PhiSet[ut].count(vt)) {
+							qt.push({ut, vt});
+							inqt[ut][vt] = true;
+						}
+					}
+			}
+		}
+		q = qt;
+		//printf("qt %d  (%d,%d)\n", qt.size(), qt.front().first, qt.front().second);
+	}
+	for (int u = 1; u <= P.n; u++) {
+		Phi[u].clear();
+		for (int v : PhiSet[u])
+			Phi[u].push_back(v);
+	}
+}
 
 bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// P.print();
@@ -170,6 +253,7 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	std::vector<int> *Phi = new std::vector<int>[P.n + 1];
 	initialPhi(P, G, Phi);
 	optimize1Phi(P, G, Phi, 1);
+	optimize2Phi(P, G, Phi, 2);
 	for (int u = 1; u <= P.n; u++) {
 		for (int &v : Phi[u]) {
 			v--;

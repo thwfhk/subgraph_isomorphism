@@ -70,7 +70,7 @@ QuickSI::Graph convert(TGraph::Graph &G) {
 	return Q;
 }
 
-bool solve(TGraph::Graph &P, TGraph::Graph &G) {
+bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// P.print();
 	// G.print();
 	QuickSI::Graph Q = convert(P);
@@ -80,14 +80,14 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G) {
 	// for (auto v : Q.QISeq) printf("%d %d\n", v.label, v.id);
 	// Q.GetQISeq();
 	// if (__flag) {
-	// 	int __ = 0;
-	// 	for(auto v:Q.QISeq){
-	// 		printf("%d: %d %d %d\n", __++, v.id, v.label, v.parent);
-	// 		printf("extra: ");
-	// 		for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
-	// 	}
-	// }
+		// int ___ = 0;
+		// for(auto v:Q.QISeq){
+		// 	printf("%d: %d %d %d\n", ___++, v.id, v.label, v.parent);
+		// 	printf("extra: ");
+		// 	for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
+		// }
 	// exit(123);
+	// }
 	// for(auto v:Q.QISeq){
 	// 	printf("%d %d %d\n", v.id, v.label, v.parent);
 	// 	printf("extra: ");
