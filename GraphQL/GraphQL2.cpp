@@ -152,6 +152,85 @@ void optimize2Phi(Graph &P, Graph &G, vector<int> *Phi, int l) {
   }
 }
 
+struct qwq {
+  int id, phisize, label;
+  qwq() {}
+  qwq(int a, int b, int c): id(a), phisize(b), label(c) {}
+  bool operator < (const qwq &r) const {
+    if (phisize == r.phisize) return label < r.label;
+    else return phisize < r.phisize;
+  }
+};
+
+// 找a和b中点能否有一个完美匹配，返回否一定是没有完美匹配
+bool checkPerfectMatch(vector<int> &a, vector<int> &b, vector<int> *Phi, Graph &P) {
+  // printf("----------- checkPerfectMatch\n"); print_vector(a); print_vector(b);
+  if (b.size() < a.size()) return false;
+  // set<int> set_b;
+  // for (int v : b) set_b.insert(v);
+  sort(b.begin(), b.end());
+  vector<qwq> vec;
+  for (int u : a) vec.push_back(qwq(u, Phi[u].size(), P.label[u]));
+  sort(vec.begin(), vec.end());
+  set<int> cur;
+  for (int i = 1; i <= vec.size(); i++) {
+    int u = vec[i-1].id;
+    // sort(Phi[u].begin(), Phi[u].end());
+    int bind = 0; // b index
+    for (int x : Phi[u]) {
+      while(bind < b.size()-1 && b[bind] < x) bind++;
+      if (b[bind] == x) cur.insert(x);
+    }
+    // for (int x : Phi[u]) if (set_b.count(x)) cur.insert(x);
+    if (cur.size() < i) return false;
+  }
+  return true;
+}
+
+void optimize2xPhi(Graph &P, Graph &G, vector<int> *Phi, int l) {
+  static bool inqt[MAXPN][MAXPN];
+  memset(inqt, 0, sizeof(inqt));
+
+  queue<pair<int, int> > q;
+  for (int u = 1; u <= P.n; u++) {
+    sort(Phi[u].begin(), Phi[u].end());
+    for (int v : Phi[u]) {
+      q.push({u, v});
+    }
+  }
+
+  for (int i = 1; i <= l; i++) {
+    // qt is used to store the (u,v) pairs needed to be updated in the next level
+    queue<pair<int, int> > qt;
+    memset(inqt, 0, sizeof(inqt));
+    while (!q.empty()) {
+      pair<int, int> x = q.front(); q.pop();
+      int u = x.first, v = x.second;
+      vector<int> neighbor_u; getNeighbor(P, 0, u, 1, neighbor_u, false);
+      vector<int> neighbor_v; getNeighbor(G, 0, v, 1, neighbor_v, false);
+      //printf("-----------------now(%d,%d)-----------------\n", u, v);
+      //print_vector(neighbor_u);
+      //print_vector(neighbor_v);
+
+      bool pm = checkPerfectMatch(neighbor_u, neighbor_v, Phi, P); 
+      // bool pm = true;
+      if (!pm) {
+        //printf("not match (%d, %d)\n", u, v);
+        Phi[u].erase(lower_bound(Phi[u].begin(), Phi[u].end(), v));
+        for (int ut : neighbor_u) 
+          for (int vt : neighbor_v) {
+            //printf("repeat %d %d\n", ut, vt);
+            if (!inqt[ut][vt] && lower_bound(Phi[ut].begin(), Phi[ut].end(), vt) != Phi[ut].end()) {
+              qt.push({ut, vt});
+              inqt[ut][vt] = true;
+            }
+          }
+      }
+    }
+    q = qt;
+    //printf("qt %d  (%d,%d)\n", qt.size(), qt.front().first, qt.front().second);
+  }
+}
 
 bool check(int u, int v, vector<int> *Phi, int *phi, Graph &P, Graph &G) {
   for (int i = P.h[u]; i; i = P.e[i].ne) {
@@ -190,8 +269,11 @@ bool solve(Graph &P, Graph &G) {
   optimize1Phi(P, G, Phi, 1);
   // puts("Optimization1: "); print_Phi(P, Phi);
 
-  optimize2Phi(P, G, Phi, 1); // l=1没什么意思呀，但是l=2的话常数显著影响QwQ
+  // optimize2Phi(P, G, Phi, 1); // l=1作用比较小(在opt1之后还是有作用的)，但是l=2的话常数显著影响QwQ
   // puts("Optimization2: "); print_Phi(P, Phi);
+
+  optimize2xPhi(P, G, Phi, 1); // 
+  // puts("Optimization2x: "); print_Phi(P, Phi);
 
   int *phi = new int [P.n+1];
 
