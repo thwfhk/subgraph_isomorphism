@@ -39,21 +39,42 @@ std::unordered_map<std::pair<short, short>, int> edge_weights;
 
 const int __N = 42687 + 5;
 
+std::vector<int> fa[__N];
+
 void initialize(int data_num, TGraph::Graph *gs[__N]) {
 	rng = std::mt19937(dev());
 
 	label_weights.clear();
 	edge_weights.clear();
-	for (int i = 1; i <= data_num; i++) {
-		for (int v = 1; v <= gs[i]->n; v++) {
-			short lv = gs[i]->label[v];
+	for (int g_i = 1; g_i <= data_num; g_i++) {
+		for (int v = 1; v <= gs[g_i]->n; v++) {
+			short lv = gs[g_i]->label[v];
 			label_weights[lv]++;
-			for (int e = gs[i]->h[v]; e; e = gs[i]->e[e].ne) {
-				int u = gs[i]->e[e].v;
-				short lu = gs[i]->label[u];
+			for (int e = gs[g_i]->h[v]; e; e = gs[g_i]->e[e].ne) {
+				int u = gs[g_i]->e[e].v;
+				short lu = gs[g_i]->label[u];
 				if (lv < lu) edge_weights[std::make_pair(lv, lu)]++;
 			}
 		}
+		fa[g_i].resize(gs[g_i]->n + 2);
+		for (int i = 1; i <= gs[g_i]->n; i++) fa[g_i][i] = i;
+		for (int i = 1; i <= gs[g_i]->n; i++) {
+			for (int j = i + 1; j <= gs[g_i]->n; j++) {
+				if (getfa(fa[g_i], i) != getfa(fa[g_i], j)) {
+					std::set<int> neighbor_i, neighbor_j;
+					for (int e = gs[g_i]->h[i]; e; e = gs[g_i]->e[e].ne) {
+						neighbor_i.insert(gs[g_i]->e[e].v);
+					}
+					for (int e = gs[g_i]->h[j]; e; e = gs[g_i]->e[e].ne) {
+						neighbor_j.insert(gs[g_i]->e[e].v);
+					}
+					if (neighbor_i == neighbor_j) {
+						fa[g_i][getfa(fa[g_i], i)] = getfa(fa[g_i], j);
+					}
+				}
+			}
+		}
+		for (int i = 1; i <= gs[g_i]->n; i++) fa[g_i][i - 1] = fa[g_i][i] - 1;
 	}
 }
 
@@ -142,37 +163,8 @@ void optimize1Phi(TGraph::Graph &P, TGraph::Graph &G, std::vector<int> *Phi, int
 	}
 }
 
-void calc_eq(const QuickSI::Graph &G, std::vector<int> &fa) {
-	for (int i = 0; i < G.nodes.size(); i++) fa[i] = i;
-	for (auto i = G.nodes.cbegin(); i != G.nodes.cend(); ++i) {
-		auto t = i;
-		++t;
-		for (auto j = t; j != G.nodes.cend(); ++j) {
-			if (getfa(fa, i->first) != getfa(fa, j->first)) {
-				std::set<int> neighbor_i, neighbor_j;
-				for (const auto &e : i->second.adj) {
-					neighbor_i.insert(e.to);
-				}
-				for (const auto &e : j->second.adj) {
-					neighbor_j.insert(e.to);
-				}
-				if (neighbor_i == neighbor_j) {
-					fa[getfa(fa, i->first)] = getfa(fa, j->first);
-				}
-			}
-		}
-	}
-	// for (int i = 0; i < G.nodes.size(); i++) {
-	// 	for (int j = i + 1; j < G.nodes.size(); j++) {
-	// 		if (getfa(fa, i) == getfa(fa, j)) {
-	// 			Eq[i].push_back(j);
-	// 			Eq[j].push_back(i);
-	// 		}
-	// 	}
-	// }
-}
 
-bool solve(TGraph::Graph &P, TGraph::Graph &G) {
+bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// P.print();
 	// G.print();
 	std::vector<int> *Phi = new std::vector<int>[P.n + 1];
@@ -207,10 +199,10 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G) {
 	// for(auto v : G_.nodes) printf("%d %d %d\n", v.first, v.second.label, v.second.deg);
 	// for (auto e : G_.edges) printf("%d %d %d\n", e.from, e.to, e.weight);
 	// std::vector<int> *Eq = new std::vector<int>[P.n + 1];
-	std::vector<int> fa(G.n + 1);
-	calc_eq(G_, fa);
+	// std::vector<int> fa(G.n + 1);
+	// calc_eq(G_, fa);
 	IsoSolver solver(Q, G_);
-	return solver.QuickSI(Phi, fa);
+	return solver.QuickSI(Phi, fa[G_id]);
 }
 
 // int main() {
