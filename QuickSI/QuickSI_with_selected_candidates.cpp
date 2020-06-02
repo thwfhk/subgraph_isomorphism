@@ -39,8 +39,10 @@ std::unordered_map<std::pair<short, short>, int> edge_weights;
 // }
 
 const int __N = 42687 + 5;
+const int __V = 2000;
 
 std::vector<int> fa[__N];
+bool phi[__V][__V];
 
 void initialize(int data_num, TGraph::Graph *gs[__N]) {
 	rng = std::mt19937(dev());
@@ -254,11 +256,14 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	initialPhi(P, G, Phi);
 	optimize1Phi(P, G, Phi, 1);
 	optimize2Phi(P, G, Phi, 2);
+
+	memset(phi, 0, sizeof(phi));
 	for (int u = 1; u <= P.n; u++) {
 		for (int &v : Phi[u]) {
-			v--;
+			phi[u - 1][v - 1] = 1;
 		}
 	}
+
 	QuickSI::Graph Q = convert(P);
 	// for(auto v : Q.nodes) printf("%d %d\n", v.first, v.second.label);
 	// for (auto e : Q.edges) printf("%d %d %d\n", e.from, e.to, e.weight);
@@ -286,7 +291,7 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// std::vector<int> fa(G.n + 1);
 	// calc_eq(G_, fa);
 	IsoSolver solver(Q, G_);
-	return solver.QuickSI(Phi, fa[G_id]);
+	return solver.QuickSI(1, fa[G_id]);
 }
 
 // int main() {

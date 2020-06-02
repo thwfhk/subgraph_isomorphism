@@ -98,7 +98,7 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// for (auto e : G_.edges) printf("%d %d %d\n", e.from, e.to, e.weight);
 	IsoSolver solver(Q, G_);
 	std::vector<int> __;
-	return solver.QuickSI(nullptr, __);
+	return solver.QuickSI(0, __);
 }
 
 // int main() {

@@ -13,12 +13,12 @@ class IsoSolver {
 	Graph &G;
 
 	bool extra_satisfied(const QISeqEntry &T, const Node &v);
-	bool dfs(int dep, std::vector<int> *Phi, std::vector<int> &fa);
+	bool dfs(int dep, bool use_phi, std::vector<int> &fa);
 
 public:
 	IsoSolver(const Graph &query, Graph &G);
 
-	bool QuickSI(std::vector<int> *Phi, std::vector<int> &fa);
+	bool QuickSI(bool use_phi, std::vector<int> &fa);
 };
 
 #endif
