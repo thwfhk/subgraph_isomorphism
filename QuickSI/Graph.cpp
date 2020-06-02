@@ -39,44 +39,58 @@ void BaseGraph::AddEdge(int u, int v, int w) { // undirected edge
 	++nodes[u].deg, ++nodes[v].deg;
 }
 
-Edge Graph::FirstEdge() {
-	int min_weight = INF, cnt = 0;
+Edge Graph::FirstEdge(std::vector<int> *Phi) {
+	int min_phi_size = INF, cnt = 0;
 	Edge edge;
 	for (const auto &e : edges) {
-		if (e.weight < min_weight) {
-			min_weight = e.weight;
+		int size = std::min(Phi[e.from + 1].size(), Phi[e.to + 1].size());
+		if (size < min_phi_size) {
+			min_phi_size = size;
 			edge = e;
 			cnt = 1;
-		} else if (e.weight == min_weight) {
+		} else if (size == min_phi_size) {
 			++cnt;
 		}
 	}
 	if (cnt != 1) {
 		cnt = 0;
-		int min_deg = INF;
+		int min_weight = INF;
 		for (const auto &e : edges) {
-			if (e.weight == min_weight) {
-				if (nodes[e.from].deg + nodes[e.to].deg < min_deg) {
-					min_deg = nodes[e.from].deg + nodes[e.to].deg;
-					edge = e;
-					cnt = 1;
-				} else if (nodes[e.from].deg + nodes[e.to].deg == min_deg) {
-					++cnt;
-				}
+			if (std::min(Phi[e.from + 1].size(), Phi[e.to + 1].size()) == min_phi_size && e.weight < min_weight) {
+				min_weight = e.weight;
+				edge = e;
+				cnt = 1;
+			} else if (e.weight == min_weight) {
+				++cnt;
 			}
 		}
 		if (cnt != 1) {
 			cnt = 0;
+			int min_deg = INF;
 			for (const auto &e : edges) {
-				if (e.weight == min_weight && nodes[e.from].deg + nodes[e.to].deg == min_deg) {
-					if (std::uniform_int_distribution<std::mt19937::result_type>(0, cnt++)(rng) == 0) {
+				if (std::min(Phi[e.from + 1].size(), Phi[e.to + 1].size()) == min_phi_size && e.weight == min_weight) {
+					if (nodes[e.from].deg + nodes[e.to].deg < min_deg) {
+						min_deg = nodes[e.from].deg + nodes[e.to].deg;
 						edge = e;
+						cnt = 1;
+					} else if (nodes[e.from].deg + nodes[e.to].deg == min_deg) {
+						++cnt;
+					}
+				}
+			}
+			if (cnt != 1) {
+				cnt = 0;
+				for (const auto &e : edges) {
+					if (std::min(Phi[e.from + 1].size(), Phi[e.to + 1].size()) == min_phi_size && e.weight == min_weight && nodes[e.from].deg + nodes[e.to].deg == min_deg) {
+						if (std::uniform_int_distribution<std::mt19937::result_type>(0, cnt++)(rng) == 0) {
+							edge = e;
+						}
 					}
 				}
 			}
 		}
 	}
-	if (nodes[edge.from].weight > nodes[edge.to].weight)
+	if (Phi[edge.from + 1].size() > Phi[edge.to + 1].size())
 		edge = Edge(edge.to, edge.from, edge.weight);
 	return edge;
 }
@@ -91,7 +105,7 @@ int Graph::CalcInd(int u) {
 	return cnt;
 }
 
-Edge Graph::SpanningEdge(std::priority_queue<Edge> &heap) {
+Edge Graph::SpanningEdge(std::priority_queue<Edge> &heap, std::vector<int> *Phi) {
 	std::vector<std::pair<Edge, int>> tmp; // pair(edge, ind_size)
 	Edge u = heap.top();
 	heap.pop(), tmp.push_back(std::make_pair(u, 0));
@@ -100,43 +114,62 @@ Edge Graph::SpanningEdge(std::priority_queue<Edge> &heap) {
 		heap.pop();
 	}
 	if (tmp.size() == 1) return u;
-	int max_ind = 0, cnt = 0;
+
+	int min_phi_size = INF, cnt = 0;
 	Edge edge;
-	for (auto &e : tmp) {
-		e.second = CalcInd(e.first.to);
-		if (e.second > max_ind) {
-			max_ind = e.second;
+	for (const auto &e : tmp) {
+		int size = std::min(Phi[e.first.from + 1].size(), Phi[e.first.to + 1].size());
+		if (size < min_phi_size) {
+			min_phi_size = size;
 			edge = e.first;
 			cnt = 1;
-		} else if (e.second == max_ind) {
+		} else if (size == min_phi_size) {
 			++cnt;
 		}
 	}
 	if (cnt != 1) {
 		cnt = 0;
-		int min_deg = INF;
-		for (const auto &e : tmp) {
-			if (e.second == max_ind) {
-				if (nodes[e.first.to].deg < min_deg) {
-					min_deg = nodes[e.first.to].deg;
+		int max_ind = 0;
+		Edge edge;
+		for (auto &e : tmp) {
+			if (std::min(Phi[e.first.from + 1].size(), Phi[e.first.to + 1].size()) == min_phi_size) {
+				e.second = CalcInd(e.first.to);
+				if (e.second > max_ind) {
+					max_ind = e.second;
 					edge = e.first;
 					cnt = 1;
-				} else if (nodes[e.first.to].deg == min_deg) {
+				} else if (e.second == max_ind) {
 					++cnt;
 				}
 			}
 		}
 		if (cnt != 1) {
 			cnt = 0;
+			int min_deg = INF;
 			for (const auto &e : tmp) {
-				if (e.second == max_ind && nodes[e.first.to].deg == min_deg) {
-					if (std::uniform_int_distribution<std::mt19937::result_type>(0, cnt++)(rng) == 0) {
+				if (std::min(Phi[e.first.from + 1].size(), Phi[e.first.to + 1].size()) == min_phi_size && e.second == max_ind) {
+					if (nodes[e.first.to].deg < min_deg) {
+						min_deg = nodes[e.first.to].deg;
 						edge = e.first;
+						cnt = 1;
+					} else if (nodes[e.first.to].deg == min_deg) {
+						++cnt;
+					}
+				}
+			}
+			if (cnt != 1) {
+				cnt = 0;
+				for (const auto &e : tmp) {
+					if (std::min(Phi[e.first.from + 1].size(), Phi[e.first.to + 1].size()) == min_phi_size && e.second == max_ind && nodes[e.first.to].deg == min_deg) {
+						if (std::uniform_int_distribution<std::mt19937::result_type>(0, cnt++)(rng) == 0) {
+							edge = e.first;
+						}
 					}
 				}
 			}
 		}
 	}
+	
 	for (const auto &e : tmp) {
 		if (e.first != edge) {
 			heap.push(e.first);
@@ -151,11 +184,11 @@ QISeqEntry Graph::MakeEntry(int u, int p) {
 	return entry;
 }
 
-void Graph::GetQISeq() {
+void Graph::GetQISeq(std::vector<int> *Phi) {
 	QISeq.clear();
 	in_MST.clear(), pos_in_QISeq.clear();
 	std::priority_queue<Edge> heap;
-	Edge edge = FirstEdge();
+	Edge edge = FirstEdge(Phi);
 	QISeq.push_back(MakeEntry(edge.from, -1));
 	QISeq.push_back(MakeEntry(edge.to, 0));
 	in_MST[edge.from] = in_MST[edge.to] = 1;
@@ -175,7 +208,7 @@ void Graph::GetQISeq() {
 			heap.pop();
 			continue;
 		}
-		Edge edge = SpanningEdge(heap);
+		Edge edge = SpanningEdge(heap, Phi);
 		if (in_MST[edge.to]) continue;
 		QISeqEntry entry = MakeEntry(edge.to, pos_in_QISeq[edge.from]);
 		in_MST[edge.to] = 1;

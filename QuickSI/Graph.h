@@ -47,14 +47,14 @@ class Graph : public BaseGraph { // Graph with QISeq
 	std::unordered_map<int, bool> in_MST;
 	std::unordered_map<int, int> pos_in_QISeq;
 
-	Edge FirstEdge();
+	Edge FirstEdge(std::vector<int> *Phi);
 	int CalcInd(int u);
-	Edge SpanningEdge(std::priority_queue<Edge> &heap);
+	Edge SpanningEdge(std::priority_queue<Edge> &heap, std::vector<int> *Phi);
 	QISeqEntry MakeEntry(int u, int p);
 
 public:
 	std::vector<QISeqEntry> QISeq;
-	void GetQISeq();
+	void GetQISeq(std::vector<int> *Phi);
 
 	friend class Preprocessor;
 	friend class IsoSolver;

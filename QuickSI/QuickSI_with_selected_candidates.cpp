@@ -255,7 +255,7 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	std::vector<int> *Phi = new std::vector<int>[P.n + 1];
 	initialPhi(P, G, Phi);
 	optimize1Phi(P, G, Phi, 1);
-	optimize2Phi(P, G, Phi, 2);
+	optimize2Phi(P, G, Phi, 3);
 
 	memset(phi, 0, sizeof(phi));
 	for (int u = 1; u <= P.n; u++) {
@@ -267,17 +267,15 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	QuickSI::Graph Q = convert(P);
 	// for(auto v : Q.nodes) printf("%d %d\n", v.first, v.second.label);
 	// for (auto e : Q.edges) printf("%d %d %d\n", e.from, e.to, e.weight);
-	Q.GetQISeq();
+	Q.GetQISeq(Phi);
 	// for (auto v : Q.QISeq) printf("%d %d\n", v.label, v.id);
 	// Q.GetQISeq();
-	// if (__flag) {
-	// 	int __ = 0;
-	// 	for(auto v:Q.QISeq){
-	// 		printf("%d: %d %d %d\n", __++, v.id, v.label, v.parent);
-	// 		printf("extra: ");
-	// 		for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
-	// 	}
-	// }
+		int __ = 0;
+		for(auto v:Q.QISeq){
+			printf("%d: %d %d %d\n", __++, v.id, v.label, v.parent);
+			printf("extra: ");
+			for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
+		}
 	// exit(123);
 	// for(auto v:Q.QISeq){
 	// 	printf("%d %d %d\n", v.id, v.label, v.parent);
@@ -291,6 +289,7 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// std::vector<int> fa(G.n + 1);
 	// calc_eq(G_, fa);
 	IsoSolver solver(Q, G_);
+	// for (int i = 0; i < G_.nodes.size(); i++) printf("%d %d\n",i, fa[G_id][i]); fflush(stdout);
 	return solver.QuickSI(1, fa[G_id]);
 }
 
