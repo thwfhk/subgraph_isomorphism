@@ -24,7 +24,7 @@ bool IsoSolver::dfs(int dep, bool use_phi, std::vector<int> &fa) {
 					if (extra_satisfied(T, v.second)) {
 						used[v.first] = 1;
 						iso[dep] = v.first;
-						printf("choose %d, dep %d\n", v.first, dep);
+						// printf("choose %d, dep %d\n", v.first, dep);
 						if (dfs(dep + 1, use_phi, fa)) return 1;
 						used[v.first] = 0;
 					}
@@ -54,7 +54,7 @@ bool IsoSolver::dfs(int dep, bool use_phi, std::vector<int> &fa) {
 						if (extra_satisfied(T, node)) {
 							used[v] = 1;
 							iso[dep] = v;
-							if (dep <= 5) printf("choose %d, dep %d\n", v, dep);
+							// if (dep <= 5) printf("choose %d, dep %d\n", v, dep);
 							if (dfs(dep + 1, use_phi, fa)) return 1;
 							used[v] = 0;
 						}
@@ -89,10 +89,10 @@ IsoSolver::IsoSolver(const Graph &query, Graph &G) : QISeq(query.QISeq), G(G) {
 
 bool IsoSolver::QuickSI(bool use_phi, std::vector<int> &fa) {
 	iso.clear(), used.clear();
-	for (int i = 0; i < QISeq.size(); i++) { printf("%d: ", i);
-		for (int j = 0; j < G.nodes.size(); j++) {
-			if (phi[i][j]) printf("%d ", j);
-		}puts("");
-	}
+	// for (int i = 0; i < QISeq.size(); i++) { printf("%d: ", i);
+	// 	for (int j = 0; j < G.nodes.size(); j++) {
+	// 		if (phi[i][j]) printf("%d ", j);
+	// 	}puts("");
+	// }
 	return dfs(0, use_phi, fa);
 }

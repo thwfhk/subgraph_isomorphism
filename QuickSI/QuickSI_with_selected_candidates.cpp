@@ -82,7 +82,7 @@ void initialize(int data_num, TGraph::Graph *gs[__N]) {
 		// for (int i = 1; i <= gs[g_i]->n; i++)
 		// 	fa[g_i][i - 1] = fa[g_i][i] - 1;
 	}
-	puts("initialize finished");
+	// puts("initialize finished");
 	// exit(233);
 }
 
@@ -270,12 +270,12 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	Q.GetQISeq(Phi);
 	// for (auto v : Q.QISeq) printf("%d %d\n", v.label, v.id);
 	// Q.GetQISeq();
-		int __ = 0;
-		for(auto v:Q.QISeq){
-			printf("%d: %d %d %d\n", __++, v.id, v.label, v.parent);
-			printf("extra: ");
-			for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
-		}
+		// int __ = 0;
+		// for(auto v:Q.QISeq){
+		// 	printf("%d: %d %d %d\n", __++, v.id, v.label, v.parent);
+		// 	printf("extra: ");
+		// 	for(auto x:v.extra)printf("%d %d,  ", x.first, x.second);puts("");
+		// }
 	// exit(123);
 	// for(auto v:Q.QISeq){
 	// 	printf("%d %d %d\n", v.id, v.label, v.parent);

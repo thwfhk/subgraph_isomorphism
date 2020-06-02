@@ -72,7 +72,7 @@ void test(int set_number) {
   #endif
   for (int i=1; i<=qn; i++)
     for (int j=1; j<=gn; j++) 
-    if (i == 4 && j == 45) 
+    // if (i == 4 && j == 45) 
     {
       // if (i == 4 && j == 45) continue;
       // printf("i j %d %d\n", i, j); fflush(stdout);
@@ -86,7 +86,7 @@ void test(int set_number) {
       #endif
       total_match += res;
       total_time += (clock() - begin) / CLOCKS_PER_SEC;
-      if (res) printf("%d %d\n", i, j);
+      // if (res) printf("%d %d\n", i, j);
       // cout << "sub-iso " << P.id << " " << G.id << " " << solve(P, G) << "\n";
       // P.print(); G.print();
     }
@@ -95,7 +95,7 @@ void test(int set_number) {
 }
 
 int main() {
-  // vector<int> vec {4, 8, 12, 16, 20, 24};
-  vector<int> vec {16};
+  vector<int> vec {4, 8, 12, 16, 20, 24};
+  // vector<int> vec {16};
   for (int v : vec) test(v);
 }
