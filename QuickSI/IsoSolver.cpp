@@ -26,14 +26,14 @@ bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> &fa) {
 						iso[dep] = v;
 						if (dfs(dep + 1, Phi, fa)) return 1;
 						used[v] = 0;
-						auto t = i;
-						++t;
-						for (auto j = t; j != Candidates.end();) {
-							if (getfa(fa, *i) == getfa(fa, *j)) {
-								j = Candidates.erase(j);
-							}
-							else ++j;
-						}
+						// auto t = i;
+						// ++t;
+						// for (auto j = t; j != Candidates.end();) {
+						// 	if (getfa(fa, *i) == getfa(fa, *j)) {
+						// 		j = Candidates.erase(j);
+						// 	}
+						// 	else ++j;
+						// }
 					}
 				}
 			}
@@ -77,14 +77,14 @@ bool IsoSolver::dfs(int dep, std::vector<int> *Phi, std::vector<int> &fa) {
 						iso[dep] = v;
 						if (dfs(dep + 1, Phi, fa)) return 1;
 						used[v] = 0;
-						auto t = i;
-						++t;
-						for (auto j = t; j != Candidates.end();) {
-							if (getfa(fa, *i) == getfa(fa, *j)) {
-								j = Candidates.erase(j);
-							}
-							else ++j;
-						}
+						// auto t = i;
+						// ++t;
+						// for (auto j = t; j != Candidates.end();) {
+						// 	if (getfa(fa, *i) == getfa(fa, *j)) {
+						// 		j = Candidates.erase(j);
+						// 	}
+						// 	else ++j;
+						// }
 					}
 				}
 			}
