@@ -207,5 +207,6 @@ bool solve(Graph &P, Graph &G) {
 
   delete [] Phi;
   delete [] used;
+  delete [] phi;
   return ans;
 }

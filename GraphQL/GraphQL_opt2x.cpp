@@ -237,6 +237,7 @@ void optimize2xPhi(Graph &P, Graph &G, vector<int> *Phi, int l) {
     Phi[u].clear();
     for (int v : PhiSet[u]) Phi[u].push_back(v);
   }
+  delete [] PhiSet;
 }
 
 bool check(int u, int v, vector<int> *Phi, int *phi, Graph &P, Graph &G) {
@@ -291,5 +292,6 @@ bool solve(Graph &P, Graph &G) {
 
   delete [] Phi;
   delete [] used;
+  delete [] phi;
   return ans;
 }
