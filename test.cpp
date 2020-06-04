@@ -11,13 +11,18 @@
 #include <cstdlib>
 #include <ctime>
 #include "GraphDS.h"
-#include "GraphQL/GraphQL.cpp" // NOTE: Replace with your file here.
-// #include "GraphQL/GraphQL2.cpp" // NOTE: Replace with your file here.
+
+#include "GraphQL/GraphQL.cpp"
+// #include "GraphQL/GraphQL_opt1_only.cpp"
+// #include "GraphQL/GraphQL_opt2x.cpp"
+
 // #include "VF2/driver_VF2.cpp" 
 // #include "VF2/driver_Boost.cpp" 
 // #include "Ullmann/driver_Ullman.cpp" 
+
 // #include "QuickSI/QuickSI.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
 // #include "QuickSI/QuickSI_with_selected_candidates.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
+
 using namespace std;
 // using TGraph::Graph;
 // using TGraph::edge;
@@ -34,6 +39,7 @@ int getrand(int n) {
 
 void load_data(string file_name, int data_num, TGraph::Graph* gs[GRAPHN]) {
   ifstream fin(file_name);
+  int labelMax = 0;
   for(int i = 1; i <= data_num; i++) {
     // printf("i %d\n", i);
     string s;
@@ -46,6 +52,7 @@ void load_data(string file_name, int data_num, TGraph::Graph* gs[GRAPHN]) {
       int l;
       fin >> l;
       gs[i]->label[j] = l;
+      labelMax = max(labelMax, l);
     }
     for(int j=1; j<=m; j++) {
       int u, v;
@@ -55,15 +62,14 @@ void load_data(string file_name, int data_num, TGraph::Graph* gs[GRAPHN]) {
     getline(fin, s); // "\n"
     getline(fin, s); // "\n"
   }
+  // printf("The Max Label: %d\n", labelMax);
 }
 
 // set_number 4 8 12 16 20 24
-void test(int set_number) {
-  // printf("test begin --- queryset: %d\n", set_number);
-  // load_data("dataset/aids/aids.data", 1000, gs);
-  // load_data("dataset/aids/query" + to_string(set_number) + ".data", 1000, qs);
-  load_data("dataset/dblp_withlabel/dblp500/dblp500.data", 100, gs);
-  load_data("dataset/dblp_withlabel/dblp500/query" + to_string(set_number) + ".data", 100, qs);
+void test(string data_name, int set_number) {
+  // printf("test begin --- %s --- queryset: %d\n", data_name.c_str(), set_number);
+  load_data(data_name + "graphs.data", 100, gs);
+  load_data(data_name + "query" + to_string(set_number) + ".data", 100, qs);
   double total_time = 0;
   int qn = 100, gn = 100; // NOTE: only 100 here!
   int total_match = 0;
@@ -91,7 +97,14 @@ void test(int set_number) {
 }
 
 int main() {
+  vector<string> data_directory_list = {
+    "dataset/aids/", 
+    // "dataset/dblp_withlabel/dblp100/", 
+    "dataset/dblp_withlabel/dblp500/",
+    // "dataset/dblp_withlabel/dblp1000/"
+  };
   vector<int> vec {4, 8, 12, 16, 20, 24};
   // vector<int> vec {20};
-  for (int v : vec) test(v);
+  string data_name = data_directory_list[3];
+  for (int v : vec) test(data_name, v);
 }
