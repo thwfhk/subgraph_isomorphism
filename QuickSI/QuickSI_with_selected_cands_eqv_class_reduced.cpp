@@ -60,27 +60,27 @@ void initialize(int data_num, TGraph::Graph *gs[__N]) {
 				if (lv < lu) edge_weights[std::make_pair(lv, lu)]++;
 			}
 		}
-		// fa[g_i].resize(gs[g_i]->n + 2);
-		// for (int i = 1; i <= gs[g_i]->n; i++)
-		// 	fa[g_i][i] = i;
-		// for (int i = 1; i <= gs[g_i]->n; i++) {
-		// 	for (int j = i + 1; j <= gs[g_i]->n; j++) {
-		// 		if (getfa(fa[g_i], i) != getfa(fa[g_i], j)) {
-		// 			std::set<int> neighbor_i, neighbor_j;
-		// 			for (int e = gs[g_i]->h[i]; e; e = gs[g_i]->e[e].ne) {
-		// 				neighbor_i.insert(gs[g_i]->e[e].v);
-		// 			}
-		// 			for (int e = gs[g_i]->h[j]; e; e = gs[g_i]->e[e].ne) {
-		// 				neighbor_j.insert(gs[g_i]->e[e].v);
-		// 			}
-		// 			if (neighbor_i == neighbor_j) {
-		// 				fa[g_i][getfa(fa[g_i], i)] = getfa(fa[g_i], j);
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// for (int i = 1; i <= gs[g_i]->n; i++)
-		// 	fa[g_i][i - 1] = fa[g_i][i] - 1;
+		fa[g_i].resize(gs[g_i]->n + 2);
+		for (int i = 1; i <= gs[g_i]->n; i++)
+			fa[g_i][i] = i;
+		for (int i = 1; i <= gs[g_i]->n; i++) {
+			for (int j = i + 1; j <= gs[g_i]->n; j++) {
+				if (getfa(fa[g_i], i) != getfa(fa[g_i], j)) {
+					std::set<int> neighbor_i, neighbor_j;
+					for (int e = gs[g_i]->h[i]; e; e = gs[g_i]->e[e].ne) {
+						neighbor_i.insert(gs[g_i]->e[e].v);
+					}
+					for (int e = gs[g_i]->h[j]; e; e = gs[g_i]->e[e].ne) {
+						neighbor_j.insert(gs[g_i]->e[e].v);
+					}
+					if (neighbor_i == neighbor_j) {
+						fa[g_i][getfa(fa[g_i], i)] = getfa(fa[g_i], j);
+					}
+				}
+			}
+		}
+		for (int i = 1; i <= gs[g_i]->n; i++)
+			fa[g_i][i - 1] = fa[g_i][i] - 1;
 	}
 	// puts("initialize finished");
 	// exit(233);
@@ -290,7 +290,7 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// calc_eq(G_, fa);
 	IsoSolver solver(Q, G_);
 	// for (int i = 0; i < G_.nodes.size(); i++) printf("%d %d\n",i, fa[G_id][i]); fflush(stdout);
-	return solver.QuickSI(1);
+	return solver.QuickSI(1, fa[G_id]);
 }
 
 // int main() {

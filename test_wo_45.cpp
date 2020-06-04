@@ -12,7 +12,7 @@
 #include <ctime>
 #include "GraphDS.h"
 
-#include "GraphQL/GraphQL.cpp"
+// #include "GraphQL/GraphQL.cpp"
 // #include "GraphQL/GraphQL_opt1_only.cpp"
 // #include "GraphQL/GraphQL_opt2x.cpp"
 
@@ -20,7 +20,7 @@
 // #include "VF2/driver_Boost.cpp" 
 // #include "Ullmann/driver_Ullman.cpp" 
 
-// #include "QuickSI/QuickSI.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
+#include "QuickSI/QuickSI.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
 // #include "QuickSI/QuickSI_with_selected_candidates.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
 // #include "QuickSI/QuickSI_with_selected_cands_eqv_class_reduced.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
 // #include "QuickSI/QuickSI_with_eqv_class_reduced.cpp" // Please compile with GraphDS.cpp QuickSI/IsoSolver.cpp QuickSI/Graph.cpp QuickSI/QISeqEntry.cpp QuickSI/util.cpp
@@ -79,8 +79,8 @@ void test(string data_name, int set_number) {
   initialize(100, gs);
   #endif
   for (int i=1; i<=qn; i++)
-    for (int j=1; j<=gn; j++) {
-      // printf("i j %d %d\n", i, j);
+    for (int j=1; j<=gn; j++) if (j != 45) {
+      printf("i j %d %d\n", i, j);
       TGraph::Graph &P = *qs[i], &G = *gs[j];
       double begin = clock();
       #ifdef QUICKSI
@@ -94,13 +94,13 @@ void test(string data_name, int set_number) {
       // cout << "sub-iso " << P.id << " " << G.id << " " << solve(P, G) << "\n";
       // P.print(); G.print();
     }
-  printf("average time of queryset %d: %lf\n", set_number, total_time / (qn*gn));
-  printf("total match %d / %d\n", total_match, qn*gn);
+  printf("average time of queryset %d: %lf\n", set_number, total_time / (qn*(gn - 1)));
+  printf("total match %d / %d\n", total_match, qn*(gn - 1));
 }
 
 int main() {
   vector<string> data_directory_list = {
-    "dataset/aids/", 
+    // "dataset/aids/", 
     // "dataset/dblp_withlabel/dblp100/", 
     "dataset/dblp_withlabel/dblp500/",
     // "dataset/dblp_withlabel/dblp1000/"

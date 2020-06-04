@@ -70,6 +70,9 @@ QuickSI::Graph convert(TGraph::Graph &G) {
 	return Q;
 }
 
+const int __V = 2000;
+bool phi[__V][__V];
+
 bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// P.print();
 	// G.print();
@@ -97,8 +100,7 @@ bool solve(TGraph::Graph &P, TGraph::Graph &G, int G_id) {
 	// for(auto v : G_.nodes) printf("%d %d %d\n", v.first, v.second.label, v.second.deg);
 	// for (auto e : G_.edges) printf("%d %d %d\n", e.from, e.to, e.weight);
 	IsoSolver solver(Q, G_);
-	std::vector<int> __;
-	return solver.QuickSI(0, __);
+	return solver.QuickSI(0);
 }
 
 // int main() {
