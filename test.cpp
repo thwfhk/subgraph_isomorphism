@@ -106,5 +106,8 @@ int main() {
   vector<int> vec {4, 8, 12, 16, 20, 24};
   // vector<int> vec {20};
   string data_name = data_directory_list[3];
-  for (int v : vec) test(data_name, v);
+  for (string data_name : data_directory_list) {
+    printf("-------------------- %s ---------------------\n", data_name.c_str());
+    for (int v : vec) test(data_name, v);
+  }
 }
