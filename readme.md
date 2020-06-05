@@ -1,5 +1,15 @@
 Implementations of some subgraph isomorphism algorithms.
 
+## Algorithm
+
+- Ullman
+- VF2
+- GraphQL 
+- A improved version of GraphQL
+- QuickSI
+- QuickSI with equivalent vertices reduced
+
+
 ## Dataset
 
 ### AIDS Antiviral Screen Data
@@ -15,8 +25,15 @@ Properties:
 - label: most of the labels are C, O, H, N, S;
 
 ### DBLP
+Properties:
 
-dblpxxx中选取了DBLP数据集中100个大小接近xxx的community。具体如下：
+- We choose 100 communities whose size are about 500 vertices as the database. 
+
+- Each graph has 1368 edges on average.
+
+- Since there are no labels initially, we random generate labels for vertices from a Guassian distribution $N(15,5)$ truncated in $[0,30]$.
+
+
 ```
 dblp1000.data meta info:
 sum: 103416
@@ -46,7 +63,6 @@ max: 117
 min: 89
 edge aver: 249
 ```
-随机生成编号：高斯分布N(15,5)，限制在[0,30]上的整数
 
 
 ## How to test

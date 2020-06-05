@@ -189,12 +189,18 @@ bool solve(Graph &P, Graph &G) {
 
   initialPhi(P, G, Phi);
   // puts("Initial: "); print_Phi(P, Phi);
+  int initialPhiSize = 0;
+  for (int i = 1; i <= P.n; i++) initialPhiSize += Phi[i].size();
 
   optimize1Phi(P, G, Phi, 1);
   // puts("Optimization1: "); print_Phi(P, Phi);
+  int opt1PhiSize = 0;
+  for (int i = 1; i <= P.n; i++) opt1PhiSize += Phi[i].size();
 
   optimize2Phi(P, G, Phi, 2); // l=1没什么意思呀，但是l=2的话常数显著影响QwQ
   // puts("Optimization2: "); print_Phi(P, Phi);
+  int opt2PhiSize = 0;
+  for (int i = 1; i <= P.n; i++) opt2PhiSize += Phi[i].size();
 
   int *phi = new int [P.n+1];
 
@@ -205,6 +211,8 @@ bool solve(Graph &P, Graph &G) {
   // printf("order: "); for (auto i : li) printf("(%d, %d) ", i.first, i.second); puts("");
   
   bool ans = dfs(li, 1, P.n, Phi, used, phi, P, G);
+
+  printf("aver_phi_size: %d %d %d\n", initialPhiSize, opt1PhiSize, opt2PhiSize);
 
   delete [] Phi;
   delete [] used;
