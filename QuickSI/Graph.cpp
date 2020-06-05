@@ -39,6 +39,147 @@ void BaseGraph::AddEdge(int u, int v, int w) { // undirected edge
 	++nodes[u].deg, ++nodes[v].deg;
 }
 
+Edge Graph::FirstEdge() {
+	int min_weight = INF, cnt = 0;
+	Edge edge;
+	for (const auto &e : edges) {
+		if (e.weight < min_weight) {
+			min_weight = e.weight;
+			edge = e;
+			cnt = 1;
+		} else if (e.weight == min_weight) {
+			++cnt;
+		}
+	}
+	if (cnt != 1) {
+		cnt = 0;
+		int min_deg = INF;
+		for (const auto &e : edges) {
+			if (e.weight == min_weight) {
+				if (nodes[e.from].deg + nodes[e.to].deg < min_deg) {
+					min_deg = nodes[e.from].deg + nodes[e.to].deg;
+					edge = e;
+					cnt = 1;
+				} else if (nodes[e.from].deg + nodes[e.to].deg == min_deg) {
+					++cnt;
+				}
+			}
+		}
+		if (cnt != 1) {
+			cnt = 0;
+			for (const auto &e : edges) {
+				if (e.weight == min_weight && nodes[e.from].deg + nodes[e.to].deg == min_deg) {
+					if (std::uniform_int_distribution<std::mt19937::result_type>(0, cnt++)(rng) == 0) {
+						edge = e;
+					}
+				}
+			}
+		}
+	}
+	if (nodes[edge.from].weight > nodes[edge.to].weight)
+		edge = Edge(edge.to, edge.from, edge.weight);
+	return edge;
+}
+
+Edge Graph::SpanningEdge(std::priority_queue<Edge> &heap) {
+	std::vector<std::pair<Edge, int>> tmp; // pair(edge, ind_size)
+	Edge u = heap.top();
+	heap.pop(), tmp.push_back(std::make_pair(u, 0));
+	while (!heap.empty() && heap.top().weight == u.weight) {
+		tmp.push_back(std::make_pair(heap.top(), 0));
+		heap.pop();
+	}
+	if (tmp.size() == 1) return u;
+	int max_ind = 0, cnt = 0;
+	Edge edge;
+	for (auto &e : tmp) {
+		e.second = CalcInd(e.first.to);
+		if (e.second > max_ind) {
+			max_ind = e.second;
+			edge = e.first;
+			cnt = 1;
+		} else if (e.second == max_ind) {
+			++cnt;
+		}
+	}
+	if (cnt != 1) {
+		cnt = 0;
+		int min_deg = INF;
+		for (const auto &e : tmp) {
+			if (e.second == max_ind) {
+				if (nodes[e.first.to].deg < min_deg) {
+					min_deg = nodes[e.first.to].deg;
+					edge = e.first;
+					cnt = 1;
+				} else if (nodes[e.first.to].deg == min_deg) {
+					++cnt;
+				}
+			}
+		}
+		if (cnt != 1) {
+			cnt = 0;
+			for (const auto &e : tmp) {
+				if (e.second == max_ind && nodes[e.first.to].deg == min_deg) {
+					if (std::uniform_int_distribution<std::mt19937::result_type>(0, cnt++)(rng) == 0) {
+						edge = e.first;
+					}
+				}
+			}
+		}
+	}
+	for (const auto &e : tmp) {
+		if (e.first != edge) {
+			heap.push(e.first);
+		}
+	}
+	return edge;
+}
+
+void Graph::GetQISeq() {
+	QISeq.clear();
+	in_MST.clear(), pos_in_QISeq.clear();
+	std::priority_queue<Edge> heap;
+	Edge edge = FirstEdge();
+	QISeq.push_back(MakeEntry(edge.from, -1));
+	QISeq.push_back(MakeEntry(edge.to, 0));
+	in_MST[edge.from] = in_MST[edge.to] = 1;
+	pos_in_QISeq[edge.from] = 0, pos_in_QISeq[edge.to] = 1;
+	for (const auto &e : nodes[edge.from].adj) {
+		if (e.to != edge.to) {
+			heap.push(e);
+		}
+	}
+	for (const auto &e : nodes[edge.to].adj) {
+		if (e.to != edge.from) {
+			heap.push(e);
+		}
+	}
+	while (!heap.empty()) {
+		if (in_MST[heap.top().to]) {
+			heap.pop();
+			continue;
+		}
+		Edge edge = SpanningEdge(heap);
+		if (in_MST[edge.to]) continue;
+		QISeqEntry entry = MakeEntry(edge.to, pos_in_QISeq[edge.from]);
+		in_MST[edge.to] = 1;
+		pos_in_QISeq[edge.to] = QISeq.size();
+		std::vector<Edge> extra_edge;
+		for (const auto &e : nodes[edge.to].adj) {
+			if (!in_MST[e.to]) {
+				heap.push(e);
+			} else if (e.to != edge.from) {
+				extra_edge.push_back(e);
+			}
+		}
+		std::sort(extra_edge.begin(), extra_edge.end(), [](const Edge &a, const Edge &b) { return a.weight < b.weight; });
+		for (const auto &e : extra_edge) {
+			entry.extra.push_back(std::make_pair(EDGE, pos_in_QISeq[e.to]));
+		}
+		QISeq.push_back(entry);
+	}
+}
+
 Edge Graph::FirstEdge(std::vector<int> *Phi) {
 	int min_phi_size = INF, cnt = 0;
 	Edge edge;
