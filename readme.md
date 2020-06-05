@@ -1,5 +1,11 @@
 Implementations of some subgraph isomorphism algorithms.
 
+This is a term project of the course *Analysis of Algorithms*.
+
+Author: [Shuchen li](https://github.com/lisc55), [Wenhao Tang](https://github.com/thwfhk), [Chang Wang](https://github.com/wangchang327) 
+
+The details can be found in the **report.pdf**
+
 ## Algorithm
 
 - Ullman
