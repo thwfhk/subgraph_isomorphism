@@ -1,4 +1,4 @@
-Implementations of some subgraph isomorphism algorithms.
+# Tackling Subgraph Isomorphism: Implementation and Optimization of Algorithms
 
 This is a term project of the course *Analysis of Algorithms*.
 
